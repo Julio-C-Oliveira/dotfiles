@@ -41,7 +41,7 @@ exec --no-startup-id ~/.config/polybar/launch.sh -b
 exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
 # | --- Adicionando o mapeamento para segunda tela --- |
-exec --no-startup-id xrandr --output DP-3 --primary --auto --output VGA1 --left-of DP-3 --auto
+exec --no-startup-id xrandr --output DP2 --primary --auto --output VGA1 --auto --left-of DP2
 
 # | --- Papel de Parede --- |
 exec_always feh --bg-fill ~/Julio/Wallpapers/Kobayashi-san_chi_no_Maid_Dragon.jpeg
@@ -201,6 +201,12 @@ bindsym $mod+Shift+q exec i3-msg exit
 # | --- Pra bloquear a tela --- |
 bindsym $mod+Mod1+q exec betterlockscreen -l
 # | -------------------------------------------------------------------------- |
+# | ----------------------- Captura de Tela ----------------------------------- |
+# Abrir o menu de seleção.
+bindsym Print exec flameshot gui 
+# Tirar print da tela inteira.
+bindsym Control+Print exec flameshot full -p ~/Pictures/Screenshots/
+
 
 # --- Muito trampo, coloquei de um modo mais direto --- |
 # resize window (you can also use the mouse for that)
