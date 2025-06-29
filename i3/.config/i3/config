@@ -38,13 +38,13 @@ exec --no-startup-id nm-applet
 exec --no-startup-id ~/.config/polybar/launch.sh -b
 
 # | --- Adicionando arredondamento -- |
-exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
+#exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
 # | --- Adicionando o mapeamento para segunda tela --- |
 exec --no-startup-id xrandr --output DP-3 --primary --auto --output VGA1 --left-of DP-3 --auto
 
 # | --- Papel de Parede --- |
-exec_always feh --bg-fill ~/Julio/Wallpapers/Kobayashi-san_chi_no_Maid_Dragon.jpeg
+exec_always feh --bg-fill ~/Downloads/Kobayashi.jpeg
 # | ----------------------- |
 
 # | --- Adicionando o mapeamento para controlar a luminosidade também, juntei os dois pq é som e luz --- |
