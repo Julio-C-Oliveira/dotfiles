@@ -125,6 +125,7 @@ yay -S --needed --noconfirm betterlockscreen
 # Tenho que alterar a localização dos wallpapers no i3 também.
 yay -S --needed --noconfirm ttf-meslo-nerd-font-powerlevel10k
 
+mkdir -p wallpapers
 bash gdrive_download.sh 1nlJ2Ch7wICBj6d4b8HM8dhSqga703mQ6 wallpapers/Kobayashi.jpg
 bash gdrive_download.sh 1mJ6XrV1nBeRmHKTcsDIN1KJ1Hycfd9iW wallpapers/Rukia.jpg
 
