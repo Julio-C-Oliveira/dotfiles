@@ -97,14 +97,20 @@ sudo pacman -S --needed --noconfirm \
 	rofi \
 	kitty \
 	yazi \
-	vim \
 	stow \
 	flatpak \
 	curl \
 	sddm \
 	qt5-graphicaleffects \
 	qt5-quickcontrols2 \
-	qt5-svg
+	qt5-svg \
+	ufw \
+	gcc \
+	make \
+	ripgrep \
+	fd \
+	unzip \
+	neovim
 
 yay -S --needed --noconfirm betterlockscreen
 
@@ -140,7 +146,7 @@ stow i3 polybar rofi kitty
 
 # 7. Configurando o sddm:
 sudo systemctl enable sddm.service
-   
+
 mkdir -p themes
 bash gdrive_download.sh 17MaLG6VJw1z4ONtGYfPjVORI18eK_8ma themes/sugar-candy.tar.gz
 
@@ -153,10 +159,29 @@ sudo cp wallpapers/Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Moun
 
 
 
-# 8. Adicionando o flathub:
+# 8. Configurando o Betterlockscreen:
+betterlockscreen -u wallpapers/Kobayashi.jpg
+
+
+
+# 9. Configurando o ufw:
+sudo systemctl enable ufw
+
+
+
+# 10. Configurando o nvim:
+git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+
+
+
+# 11. Adicionando o flathub:
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 
 
-# 9. Avisando o user de que a instalação foi finalizada:
-echo "Instalação concluída com sucesso."
+# 12. Avisando o user de que a instalação foi finalizada:
+echo "Instalação concluída com sucesso. O dispositivo será reiniciado em 5 segundos."
+
+sleep 5
+
+reboot
