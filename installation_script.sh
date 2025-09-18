@@ -137,7 +137,7 @@ bash gdrive_download.sh 1mJ6XrV1nBeRmHKTcsDIN1KJ1Hycfd9iW wallpapers/Rukia.jpg
 # Criando os links simbolicos para os dotfiles:
 mkdir -p ~/.config 
 stow bash git
-stow i3 polybar rofi kitty
+stow i3 polybar rofi kitty yazi
 
 
 # Configurando o sddm:
