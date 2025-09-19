@@ -1,0 +1,46 @@
+// Função para carregar frames de uma pasta, dentro de um intervalo específico
+função carregar_frames_intervalo(diretorio, inicio, fim) {
+    lista = [];
+    para i = inicio; i <= fim; i++ {
+        nome = diretorio + "/frame_" + sprintf("%03d", i) + ".jpg";
+        img = Image(nome);
+        se (!img) break;
+        lista += [img];
+    }
+    return lista;
+}
+
+// Carrega os frames iniciais e de loop
+frames_inicial = carregar_frames_intervalo("/usr/share/plymouth/themes/umamusume/frames", 1, 30);  // 30 frames
+frames_loop    = carregar_frames_intervalo("/usr/share/plymouth/themes/umamusume/frames", 31, 166); // 136 frames
+
+start_time = Time();
+fps = 30;
+
+função draw() {
+    t = Time() - start_time;
+    img = null;
+
+    // Parte inicial
+    if (t < Length(frames_inicial) / fps) {
+        img_idx = Floor(t * fps);
+        if (img_idx >= Length(frames_inicial)) img_idx = Length(frames_inicial) - 1;
+        img = frames_inicial[img_idx];
+    } else {
+        // Loop: garante que todos os frames do loop sejam exibidos pelo menos uma vez
+        loop_time = t - (Length(frames_inicial) / fps);
+        total_loop_duration = Length(frames_loop) / fps;
+
+        progress = loop_time / total_loop_duration;
+        if (progress > 1.0) progress = 1.0;  // não passa do último frame
+        img_idx = Floor(progress * Length(frames_loop));
+        if (img_idx >= Length(frames_loop)) img_idx = Length(frames_loop) - 1;
+
+        img = frames_loop[img_idx];
+    }
+
+    if (img) {
+        DrawImage(img, 0, 0, ScreenWidth, ScreenHeight);
+    }
+}
+
