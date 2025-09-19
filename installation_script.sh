@@ -60,7 +60,6 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S --needed --noconfirm git base-devel
 
 if ! command -v yay &>/dev/null; then
-    sudo rm -rf /tmp/yay
     git clone https://aur.archlinux.org/yay.git /tmp/yay
     cd /tmp/yay
     makepkg -si --noconfirm
@@ -92,6 +91,7 @@ sudo pacman -S --needed --noconfirm \
 	xf86-input-libinput \
 	i3-wm \
 	feh \
+	betterlockscreen \
 	flameshot \
 	polybar \
 	rofi \
@@ -101,12 +101,8 @@ sudo pacman -S --needed --noconfirm \
 	stow \
 	flatpak \
 	curl \
-	sddm \
-	qt5-graphicaleffects \
-	qt5-quickcontrols2 \
-	qt5-svg
+	sddm
 
-yay -S --needed --noconfirm betterlockscreen
 
 
 # 4. Removendo os arquivos de configuração já existentes, que serão substituidos pelos meus:
@@ -123,8 +119,9 @@ yay -S --needed --noconfirm betterlockscreen
 # 5. Baixando fontes e papéis de parede:
 # - mkdir -p, cria a pasta, se ela não existir.
 # Tenho que alterar a localização dos wallpapers no i3 também.
-yay -S --needed --noconfirm ttf-meslo-nerd-font-powerlevel10k
+yay -S --needed --noconfirm nerd-fonts-meslo
 
+mkdir -p wallpapers
 bash gdrive_download.sh 1nlJ2Ch7wICBj6d4b8HM8dhSqga703mQ6 wallpapers/Kobayashi.jpg
 bash gdrive_download.sh 1mJ6XrV1nBeRmHKTcsDIN1KJ1Hycfd9iW wallpapers/Rukia.jpg
 
@@ -143,12 +140,9 @@ sudo systemctl enable sddm.service
 mkdir -p themes
 bash gdrive_download.sh 17MaLG6VJw1z4ONtGYfPjVORI18eK_8ma themes/sugar-candy.tar.gz
 
-sudo mkdir -p /usr/share/sddm/themes
-sudo tar -xzvf themes/sugar-candy.tar.gz -C /usr/share/sddm/themes
-sudo mkdir -p /etc/sddm.conf.d
-sudo stow -t / sddm
-
-sudo cp wallpapers/Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg
+sudo mkdir ‑p /usr/share/sddm/themes
+sudo tar ‑xzvf themes/sugar‑candy.tar.gz ‑C /usr/share/sddm/themes
+# /etc/sddm.conf tenho que editar esse arquivo, mas não me lembro como ele é, lá eu escolho o tema e o papel de parede, se eu não me engano.
 
 
 
