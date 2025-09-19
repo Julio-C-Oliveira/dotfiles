@@ -38,7 +38,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id ~/.config/polybar/launch.sh -b
 
 # | --- Adicionando arredondamento -- |
-exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
+# exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
 # | --- Adicionando o mapeamento para segunda tela --- |
 exec --no-startup-id xrandr --output DP2 --primary --auto --output VGA1 --auto --left-of DP2
@@ -281,6 +281,9 @@ gaps outer 3
 # exec --no-startup-id picom --config ~/.config/picom/picom.conf
 
 # bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'dmenu%'"
+
+# Desligar o PC
+bindsym $mod+Control+Mod1+s exec shutdown 0
 
 # | --- Tratamentos Especiais --- |
 for_window [class="^Opera$"] floating disable
