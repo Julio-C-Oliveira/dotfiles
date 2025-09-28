@@ -127,7 +127,10 @@ yay -S --needed --noconfirm betterlockscreen
 # Baixando fontes e papéis de parede:
 # - mkdir -p, cria a pasta, se ela não existir.
 # Tenho que alterar a localização dos wallpapers no i3 também.
-yay -S --needed --noconfirm ttf-meslo-nerd-font-powerlevel10k
+yay -S --needed --noconfirm \
+	ttf-meslo-nerd-font-powerlevel10k \
+	ttf-firacode-nerd \
+	noto-fonts-emoji
 
 mkdir -p wallpapers
 bash gdrive_download.sh 1nlJ2Ch7wICBj6d4b8HM8dhSqga703mQ6 wallpapers/Kobayashi.jpg
