@@ -33,5 +33,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Serviços
 
-# i3-wn
+# Iniciando o i3-wn na home:
+cd ~
 exec i3
