@@ -7,6 +7,9 @@ export XDG_SESSION_DESKTOP=
 export XDG_SESSION_CLASS=
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
+# Váriaveis gerais:
+export EDITOR=nvim
+
 # D-Bus:
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     eval "$(dbus-launch --sh-syntax --exit-with-session)"
@@ -22,7 +25,7 @@ xrandr --output eDP-1 --primary --auto --output HDMI-2 --auto --left-of eDP-1
 feh --bg-fill ~/dotfiles/wallpapers/Kobayashi.jpg
 
 # Path do usuário:
-export PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:$PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 # Perfil de cores:
 # export GTK_THEME=Adwaita:dark
