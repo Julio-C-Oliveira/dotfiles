@@ -211,5 +211,8 @@ gaps outer 3
 
 # exec --no-startup-id picom --config ~/.config/picom/picom.conf
 
+# Desligar o PC:
+bindsym $mod+Control+Mod1+s exec shutdown 0
+
 # Ajuste do tamanho da borda.
 default_border pixel 2
