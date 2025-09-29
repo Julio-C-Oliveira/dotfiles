@@ -11,3 +11,4 @@ alias grep='grep --color=auto'
 PS1='\[\e[35m\]\u\[\e[36m\]@\h\[\e[0m\] \W \$ '
 # PS1='\[\e[35m\]\u\e[36m\]@\h\[\e[0m\] \w \$ '
 export PATH="$PATH:$HOME/.config/composer/vendor/bin"
+export EDITOR=nvim
