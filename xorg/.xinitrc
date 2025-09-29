@@ -21,8 +21,12 @@ xrandr --output eDP-1 --primary --auto --output HDMI-2 --auto --left-of eDP-1
 # Papel de Parede:
 feh --bg-fill ~/dotfiles/wallpapers/Kobayashi.jpg
 
-# Path do usuário
+# Path do usuário:
 export PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:$PATH
+
+# Perfil de cores:
+# export GTK_THEME=Adwaita:dark
+# export QT_QPA_PLATFORMTHEME=qt5ct
 
 # Serviços
 
