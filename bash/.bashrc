@@ -10,8 +10,6 @@ alias grep='grep --color=auto'
 
 PS1='\[\e[35m\]\u\[\e[36m\]@\h\[\e[0m\] \W \$ '
 
-export PATH="$HOME/.local/bin:$PATH"
-
 # Funções extras:
 clearscreenandscrollback() {
   clear
