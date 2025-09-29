@@ -288,3 +288,5 @@ bindsym $mod+Control+Mod1+s exec shutdown 0
 # | --- Tratamentos Especiais --- |
 for_window [class="^Opera$"] floating disable
 # | ------------------------------------------------------------------------- |
+
+default_border pixel 2
