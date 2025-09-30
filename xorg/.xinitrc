@@ -33,5 +33,6 @@ export GTK_THEME=Adwaita:dark
 
 # Serviços
 
-# i3-wn
+# Iniciando o i3-wn na home:
+cd ~
 exec i3
