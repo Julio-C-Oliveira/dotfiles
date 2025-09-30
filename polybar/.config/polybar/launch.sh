@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Mata as instâncias antigas da polybar
-killall -q polybar
+pkill -u "$USER" -x polybar
 
 # Espera até elas serem fechadas
-while pgrep -x polybar >/dev/null; do sleep 1; done
+while pgrep -u "$USER" -x polybar >/dev/null; do sleep 1; done
 
 # Inicia a polybar
 polybar example &
