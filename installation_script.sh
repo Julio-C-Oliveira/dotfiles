@@ -43,14 +43,12 @@
 set -euo pipefail
 
 
-
-# 1. Atualizar o sistema:
+# Atualizar o sistema:
 # - noconfirm, responde sim para as perguntas padrão que ocorrem durante a instalação.
 sudo pacman -Syu --noconfirm
 
 
-
-# 2. Instalando o yay:
+# Instalando o yay:
 # É um repositório extra, feito pela comunidade do arch.
 # - git, é um gerenciador de versionamento de código.
 # - base-devel, é um pacote com várias ferramentas necessárias, para compilar programas.
@@ -67,8 +65,7 @@ if ! command -v yay &>/dev/null; then
 fi
 
 
-
-# 3. Instalando os pacotes necessários:
+# Instalando os pacotes necessários:
 # - xorg-server, é o motor gráfico do sistema.
 # - xorg-xrandr, serve pra gerenciar os monitores.
 # - xf86-input-libinput, driver de teclado e mouse pro xorg.
@@ -97,15 +94,23 @@ sudo pacman -S --needed --noconfirm \
 	rofi \
 	kitty \
 	yazi \
-	vim \
 	stow \
 	flatpak \
 	curl \
-	sddm
+	sddm \
+	qt5-graphicaleffects \
+	qt5-quickcontrols2 \
+	qt5-svg \
+	ufw \
+	gcc \
+	make \
+	ripgrep \
+	fd \
+	unzip \
+	neovim \
+	github-cli
 
-
-
-# 4. Removendo os arquivos de configuração já existentes, que serão substituidos pelos meus:
+# Removendo os arquivos de configuração já existentes, que serão substituidos pelos meus:
 # - rf, serve pra remover recursivamente, de modo forçado.
 # - d e o f, servem para verificar se o diretório ou o arquivo existem.
 [ -d ~/.config/i3 ] && rm -rf ~/.config/i3
@@ -113,30 +118,31 @@ sudo pacman -S --needed --noconfirm \
 [ -d ~/.config/rofi ] && rm -rf ~/.config/rofi
 [ -d ~/.config/kitty ] && rm -rf ~/.config/kitty
 [ -f ~/.bashrc ] && rm -f ~/.bashrc
+[ -f ~/.gitconfig] && rm -f ~/.gitconfig
 
 
-
-# 5. Baixando fontes e papéis de parede:
+# Baixando fontes e papéis de parede:
 # - mkdir -p, cria a pasta, se ela não existir.
 # Tenho que alterar a localização dos wallpapers no i3 também.
-yay -S --needed --noconfirm nerd-fonts-meslo
+yay -S --needed --noconfirm \
+	ttf-meslo-nerd-font-powerlevel10k \
+	ttf-firacode-nerd \
+	noto-fonts-emoji
 
 mkdir -p wallpapers
 bash gdrive_download.sh 1nlJ2Ch7wICBj6d4b8HM8dhSqga703mQ6 wallpapers/Kobayashi.jpg
 bash gdrive_download.sh 1mJ6XrV1nBeRmHKTcsDIN1KJ1Hycfd9iW wallpapers/Rukia.jpg
 
 
-
-# 6. Criando os links simbolicos para os dotfiles:
+# Criando os links simbolicos para os dotfiles:
 mkdir -p ~/.config 
-stow bash
-stow i3 polybar rofi kitty
+stow bash git
+stow i3 polybar rofi kitty yazi
 
 
-
-# 7. Configurando o sddm:
+# Configurando o sddm:
 sudo systemctl enable sddm.service
-   
+
 mkdir -p themes
 bash gdrive_download.sh 17MaLG6VJw1z4ONtGYfPjVORI18eK_8ma themes/sugar-candy.tar.gz
 
@@ -145,11 +151,23 @@ sudo tar ‑xzvf themes/sugar‑candy.tar.gz ‑C /usr/share/sddm/themes
 # /etc/sddm.conf tenho que editar esse arquivo, mas não me lembro como ele é, lá eu escolho o tema e o papel de parede, se eu não me engano.
 
 
+# Configurando o Betterlockscreen:
+betterlockscreen -u wallpapers/Kobayashi.jpg
 
-# 8. Adicionando o flathub:
+
+# Configurando o ufw:
+sudo systemctl enable ufw
+
+
+# Configurando o nvim:
+git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+
+
+# Adicionando o flathub:
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 
-
-# 9. Avisando o user de que a instalação foi finalizada:
-echo "Instalação concluída com sucesso."
+# Avisando o user de que a instalação foi finalizada:
+echo "Instalação concluída com sucesso. O dispositivo será reiniciado em 5 segundos."
+sleep 5
+reboot

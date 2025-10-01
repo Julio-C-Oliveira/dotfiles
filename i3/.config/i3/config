@@ -40,9 +40,6 @@ exec --no-startup-id ~/.config/polybar/launch.sh -b
 # | --- Adicionando arredondamento -- |
 #exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
-# | --- Adicionando o mapeamento para segunda tela --- |
-exec --no-startup-id xrandr --output eDP-1 --primary --auto --output HDMI-2 --auto --left-of eDP-1
-
 # | --- Papel de Parede --- |
 exec_always feh --bg-fill ~/Downloads/Kobayashi.jpeg
 # | ----------------------- |
@@ -85,24 +82,11 @@ bindsym $mod+d exec rofi -show drun
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
-# | --- Tirando redundancia, não tem porque mapear uma função para mais de um atalho --- |
-# change focus
-# bindsym $mod+j focus left
-# bindsym $mod+k focus down
-# bindsym $mod+l focus up
-# bindsym $mod+ccedilla focus right
-
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
-
-# move focused window
-# bindsym $mod+Shift+j move left
-# bindsym $mod+Shift+k move down
-# bindsym $mod+Shift+l move up
-# bindsym $mod+Shift+ccedilla move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -111,12 +95,6 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 # | ----------------------------------------------------------------------------------- |
 
-# | --- Reduzindo o número de teclas --- |
-# split in horizontal orientation
-# bindsym $mod+h split h
-
-# split in vertical orientation
-# bindsym $mod+v split v
 
 # Muda a direção de corte, a nova tecla é o [, fica do lado do enter então é prático pra mim
 bindsym $mod+bracketleft split toggle
@@ -209,60 +187,12 @@ bindsym Print exec flameshot gui
 bindsym Control+Shift+s exec flameshot full -p ~/Imagens/Screenshots/
 # | --------------------------------------------------------------------------- |
 
-# --- Muito trampo, coloquei de um modo mais direto --- |
-# resize window (you can also use the mouse for that)
-# mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-#         bindsym j resize shrink width 10 px or 10 ppt
-#         bindsym k resize grow height 10 px or 10 ppt
-#         bindsym l resize shrink height 10 px or 10 ppt
-#         bindsym ccedilla resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-#         bindsym Left resize shrink width 10 px or 10 ppt
-#         bindsym Down resize grow height 10 px or 10 ppt
-#         bindsym Up resize shrink height 10 px or 10 ppt
-#         bindsym Right resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape or $mod+r
-#         bindsym Return mode "default"
-#         bindsym Escape mode "default"
-#         bindsym $mod+r mode "default"
-# }
-
-# bindsym $mod+r mode "resize"
-
 bindsym $mod+Control Right resize grow width 1 px or 1 ppt
 bindsym $mod+Control Left resize shrink width 1 px or 1 ppt
 bindsym $mod+Control Up resize grow height 1 px or 1 ppt
 bindsym $mod+Control Down resize shrink height 1 px or 1 ppt 
 
 # | ------------------------------------------------------------------------- |
-
-# | --- Tema pra deixar bonito ---------------------------------------------- |
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-# bar {
-#   status_command i3status
-
-#   colors {
-#     background #282A36
-#     statusline #F8F8F2
-#     separator  #44475A
-
-#     focused_workspace  #44475A #44475A #F8F8F2
-#     active_workspace   #282A36 #44475A #F8F8F2
-#     inactive_workspace #282A36 #282A36 #BFBFBF
-#     urgent_workspace   #FF5555 #FF5555 #F8F8F2
-#     binding_mode       #FF5555 #FF5555 #F8F8F2
-#   }
-# }
-
 
 # class                 border  bground text    indicator child_border
 client.focused          #6272A4 #6272A4 #F8F8F2 #50fa7b   #6272A4
@@ -281,8 +211,8 @@ gaps outer 3
 
 # exec --no-startup-id picom --config ~/.config/picom/picom.conf
 
-# bindsym $mod+d exec "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'dmenu%'"
+# Desligar o PC:
+bindsym $mod+Control+Mod1+s exec shutdown 0
 
-# | --- Tratamentos Especiais --- |
-for_window [class="^Opera$"] floating disable
-# | ------------------------------------------------------------------------- |
+# Ajuste do tamanho da borda.
+default_border pixel 2
