@@ -7,4 +7,4 @@ pkill -u "$USER" -x polybar
 while pgrep -u "$USER" -x polybar >/dev/null; do sleep 1; done
 
 # Inicia a polybar
-polybar example &
+polybar top_primary &
