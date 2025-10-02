@@ -180,7 +180,7 @@ bindsym $mod+Mod1+q exec betterlockscreen -l
 # Abrir o menu de seleção.
 bindsym Print exec flameshot gui 
 # Tirar print da tela inteira.
-bindsym Control+Shift+s exec flameshot full -p ~/Imagens/Screenshots/
+bindsym Control+Shift+s exec flameshot full -p "~/Imagens/Capturas de tela/"
 # | --------------------------------------------------------------------------- |
 
 bindsym $mod+Control Right resize grow width 1 px or 1 ppt
