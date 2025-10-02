@@ -2,9 +2,10 @@
 
 # Variáveis de sessão XDG:
 export XDG_SESSION_TYPE=x11
-export XDG_CURRENT_DESKTOP=
-export XDG_SESSION_DESKTOP=
-export XDG_SESSION_CLASS=
+export XDG_CURRENT_DESKTOP=i3
+export XDG_SESSION_DESKTOP=i3
+export XDG_SESSION_CLASS=user
+export DESKTOP_SESSION=i3
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
 # Váriaveis gerais:
