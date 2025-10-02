@@ -7,25 +7,27 @@ configuration {
 }
 
 * {
-    font: "Jetbrains Mono 12";
+    font: "Meslo LGS NF 11.5";
     foreground: #f8f8f2;
     background-color: #282a36;
-    active-background: #6272a4;
+    active-background: #44475a; /* #6272a4; Cor antiga.*/
     urgent-background: #ff5555;
     urgent-foreground: #282a36;
+    bordercolor: #6272a4; /* @active-background; */
+    search-background: #212229;
+    search-border-color: #bd93f9;
     selected-background: @active-background;
     selected-urgent-background: @urgent-background;
     selected-active-background: @active-background;
     separatorcolor: @active-background;
-    bordercolor: @active-background;
 }
 
 #window {
     background-color: @background-color;
-    border:           3;
-    border-radius:    6;
+    border:           2;
+    border-radius:    0;
     border-color:     @bordercolor;
-    padding:          15;
+    padding:          10;
 }
 #mainbox {
     border:  0;
@@ -38,6 +40,7 @@ configuration {
 }
 #textbox {
     text-color: @foreground;
+    background-color: @search-background;
 }
 #listview {
     fixed-height: 0;
@@ -104,26 +107,33 @@ configuration {
 #inputbar {
     spacing:    0;
     text-color: @foreground;
-    padding:    1px ;
+    background-color: @search-background;
+    padding:    10px ;
+    border:     0px 0px 3px 0px ;
+    border-color: @search-border-color;
 }
 #case-indicator {
     spacing:    0;
     text-color: @foreground;
+    background-color: @search-background;
 }
 #entry {
+    expand: true;
     spacing:    0;
     text-color: @foreground;
+    background-color: @search-background;
 }
 #prompt {
     spacing:    0;
     text-color: @foreground;
+    background-color: @search-background;
 }
 #inputbar {
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
 }
 #textbox-prompt-colon {
     expand:     false;
-    str:        ">";
+    str:        "";
     margin:     0px 0.3em 0em 0em ;
     text-color: @foreground;
 }
@@ -131,3 +141,8 @@ element-text, element-icon {
     background-color: inherit;
     text-color: inherit;
 }
+/* remover underline dos matches */
+element-text {
+	highlight: bold #ffb86c;
+}
+
