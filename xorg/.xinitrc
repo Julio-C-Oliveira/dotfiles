@@ -11,9 +11,9 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export EDITOR=nvim
 
 # D-Bus:
-if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-    eval "$(dbus-launch --sh-syntax --exit-with-session)"
-fi
+# if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+#     eval "$(dbus-launch --sh-syntax --exit-with-session)"
+# fi
 
 # Teclado:
 setxkbmap -layout br -variant abnt2 -option lv3:ralt_switch
@@ -35,4 +35,4 @@ export GTK_THEME=Adwaita:dark
 
 # Iniciando o i3-wn na home:
 cd ~
-exec i3
+exec dbus-run-session -- i3
