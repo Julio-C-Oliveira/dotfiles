@@ -5,6 +5,7 @@ export XDG_SESSION_TYPE=x11
 export XDG_CURRENT_DESKTOP=i3
 export XDG_SESSION_DESKTOP=i3
 export XDG_SESSION_CLASS=user
+export DESKTOP_SESSION=i3
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
 # Váriaveis gerais:
