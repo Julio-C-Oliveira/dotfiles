@@ -10,11 +10,6 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 # Váriaveis gerais:
 export EDITOR=nvim
 
-# D-Bus:
-if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-    eval "$(dbus-launch --sh-syntax --exit-with-session)"
-fi
-
 # Teclado:
 setxkbmap -layout br -variant abnt2 -option lv3:ralt_switch
 
@@ -33,6 +28,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Serviços
 
-# Iniciando o i3-wn na home:
+# Iniciando o i3-wn com dbus na home:
 cd ~
-exec i3
+exec dbus-run-session -- i3
