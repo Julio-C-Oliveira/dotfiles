@@ -60,7 +60,7 @@ while true; do
 		echo "%{F$icon_color}$icon%{F-} $percentage%"
 
 	else
-		click_command=$(df -h / /home | awk 'NR>1 {print $6 " " $5}' | paste -sd ' ')
+		click_command=$(df -h "${partitions[@]}" | awk 'NR>1 {print $6 " " $5}' | paste -sd ' ')
 		echo "$click_command"
 	fi
 
