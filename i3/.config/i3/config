@@ -37,6 +37,11 @@ exec --no-startup-id nm-applet
 # | --- Adicionando a Polybar --|
 exec --no-startup-id ~/.config/polybar/launch.sh -b
 
+exec xrandr --output DP2 --primary --auto --output VGA1 --auto --left-of DP2
+
+exec feh --bg-fill ~/dotfiles/wallpapers/Kobayashi.jpg
+
+
 # | --- Adicionando arredondamento -- |
 #exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
