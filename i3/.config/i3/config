@@ -41,7 +41,7 @@ exec --no-startup-id ~/.config/polybar/launch.sh -b
 #exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
 # | --- Papel de Parede --- |
-exec_always bash ${HOME}/dotfiles/scripts/change_wallpaper.sh 
+exec_always ${HOME}/dotfiles/scripts/change_wallpaper.sh 
 # | ----------------------- |
 
 # | --- Adicionando o mapeamento para controlar a luminosidade também, juntei os dois pq é som e luz --- |
