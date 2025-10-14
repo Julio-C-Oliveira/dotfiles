@@ -43,7 +43,7 @@ exec xrandr --output DP2 --primary --auto --output VGA1 --auto --left-of DP2
 #exec --no-startup-id picom --config ~/.config/picom/picom.conf -b
 
 # | --- Papel de Parede --- |
-exec bash ${HOME}/dotfiles/scripts/change_wallpaper.sh ${HOME}/dotfiles/scripts/change_wallpaper.sh ~/Documentos/wallpapers/ 
+exec_always ${HOME}/dotfiles/scripts/change_wallpaper.sh ${HOME}/Documentos/wallpapers/
 # | ----------------------- |
 
 # | --- Adicionando o mapeamento para controlar a luminosidade também, juntei os dois pq é som e luz --- |
