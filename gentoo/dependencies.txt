@@ -1,0 +1,31 @@
+# X server:
+x11-base/xorg-server
+x11-apps/xrandr
+x11-drivers/xf86-input-libinput
+x11-apps/xinit
+
+# Gerenciador de login:
+# x11-misc/sddm
+# dev-qt/qt5-graphicaleffects
+# dev-qt/qtquickcontrols2
+# dev-qt/qt5-svg
+
+# Window manager e utilitários:
+x11-wm/i3
+media-gfx/feh
+media-gfx/flameshot
+x11-misc/polybar
+x11-misc/rofi
+x11-terms/kitty
+# x11-misc/yazi
+app-admin/stow
+sys-apps/flatpak
+net-misc/curl
+app-editors/neovim
+
+# Segurança:
+net-firewall/ufw
+
+# Navegador:
+www-client/firefox
+# www-client/firefox-bin
