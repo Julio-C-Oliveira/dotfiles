@@ -1,16 +1,31 @@
 #! /bin/sh
 
 # --------------------------------------
+# FUNCTIONS
+# --------------------------------------
+
+run() {
+	if ! pgrep -f -x "$1" > /dev/null; then
+		"$@" &
+	fi
+}
+
+rerun() {
+	pkill -x "$1"
+	sleep 0.2
+	"$@" &
+}
+
+# --------------------------------------
 # AUTOSTARTS
 # --------------------------------------
 
-pgrep -x sxhkd > /dev/null || sxhkd &
+run sxhkd
+run nm-applet
+rerun picom --config $HOME/.config/picom/picom.conf -b
 
 $HOME/.config/polybar/launch.sh -b &
-
 $HOME/dotfiles/scripts/change_wallpaper.sh &
-
-nm-applet &
 
 # --------------------------------------
 # OTHERS
