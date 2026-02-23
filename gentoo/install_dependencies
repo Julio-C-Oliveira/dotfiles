@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Lê o arquivo, remove comentários e linhas em branco, transforma em lista
+DEPLIST=$(sed -e 's/#.*$//' -e '/^\s*$/d' dependencies.txt | tr '\n' ' ')
+
+# Mostra os pacotes que serão instalados
+echo "Pacotes a instalar: $DEPLIST"
+
+# Instala os pacotes com emerge
+sudo emerge --autounmask-continue -q $DEPLIST

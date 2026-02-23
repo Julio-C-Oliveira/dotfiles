@@ -1,0 +1,152 @@
+#
+# wm independent hotkeys
+#
+
+# ---------------------------
+# TERMINAL E LAUNCHER
+# ---------------------------
+
+# Start kitty terminal
+super + Return
+	kitty
+
+# Start rofi
+super + d
+	rofi -show drun
+
+# make sxhkd reload its configuration files: !! Tenho que olhar isso depois !!!
+super + Escape
+	pkill -USR1 -x sxhkd
+
+
+# -----------------------------
+# WINDOW MANAGER
+# -----------------------------
+
+# Close or restart window manager
+super + shift + {q, r}
+	bspc {quit, wm -r}
+
+# Close or kill focused window
+super + {q, k}
+	bspc node -{c, k}
+
+# Set the window state
+super + {t, shift + t, s, f}
+	bspc node -t {tiled, pseudo_tiled, floating, fullscreen}
+
+# Alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# set the node flags
+super + ctrl + {m, x, y, z}
+	bspc node -g {marked, locked, sticky, private}
+
+# ------------------------------
+# MANUAL SPLIT
+# ------------------------------
+#
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# preselect the direction
+super + alt + {Left, Down, Up, Right}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+# -----------------------------
+# FOCUS AND MOVEMENT
+# -----------------------------
+
+# Change focus
+super + {Left, Down, Up, Right}
+	bspc node -f {west, south, north, east}
+
+# Move focused window
+super + shift + {Left, Down, Up, Right}
+	bspc node -m {west, south, north, east} --follow || bspc node -s {west, south, north, east}
+
+# Resize
+super + ctrl + {Left, Down, Up, Right}
+	bspc node -z {left -20 0, bottom 0 20, top 0 -20, right 20 0}
+
+# move a floating window, acho que tá duplicado
+super + ctrl + alt {Left, Down, Up, Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# swap the current node and the biggest window
+super + g
+	bspc node -s biggest.window
+
+# ---------------------------
+# WORKSPACES 
+# ---------------------------
+
+# Switch workpaces
+super + {1-9, 0}
+	bspc desktop -f '^{1-9,10}'
+
+super + shift + {1-9, 0}
+	bspc node -d '^{1-9,10}' --follow
+
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# ---------------------------
+# SOUND AND BRIGHTNESS
+# ---------------------------
+
+# Volume Control
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+	pactl set-sink-{volume @DEFAULT_SINK@ +5%,volume @DEFAULT_SINK@ -5%,mute @DEFAULT_SINK@ toggle}
+
+# Mic Mute
+XF86AudioMicMute
+	pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+# Brightness (Teclado Numérico conforme seu i3)
+super + ctrl + shift + KP_Add
+	brightnessctl set +5%
+
+super + ctrl + shift + KP_Subtract
+	brightnessctl set 5%-
+
+# --------------------------
+# SYSTEM
+# --------------------------
+
+# Shutdown or Restart
+super + ctrl + alt + {s, r}
+	{shutdown 0, reboot}
+
+# Lock Screen
+super + alt + q
+	betterlockscreen -l
+
+# --------------------------
+# OTHERS
+# --------------------------
+
+# Screenshots com GUI (Flameshot)
+Print
+	flameshot gui
+
+# Screenshot sem GUI
+ctrl + shift + s
+	flameshot full -p ~/Imagens/Capturas\ de\ tela/
+
+

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pkill -f -v $$ change_wallpaper.sh
+
 folder_path="${1:-${HOME}/dotfiles/wallpapers}"
 sleep_time="${2:-25}"
 
