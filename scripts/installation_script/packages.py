@@ -33,6 +33,7 @@ arch_packages = [
     "unzip", "p7zip",
 
     # Apps:
+    "firefox",
     "kitty",
     "yazi", 
     "feh", "flameshot", "dunst", "lxappearance",
