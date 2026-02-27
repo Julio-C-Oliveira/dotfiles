@@ -29,7 +29,12 @@ def main():
     )
 
     utils.enable_system_services(
-        system_packages_to_enable=packages.system_packages_to_enable,
+        packages=packages.system_packages_to_enable,
+        logger=logger
+    )
+
+    utils.enable_user_services(
+        packages=packages.user_packages_to_enable,
         logger=logger
     )
 
@@ -46,6 +51,15 @@ def main():
     utils.update_grub(
         logger=logger
     )
+
+    logger.info("Instalação finalizada")
+    
+    confirmar = input(f"\n{utils.Cores.YELLOW}Deseja reiniciar o sistema agora? (s/n): {utils.Cores.RESET}")
+    if confirmar.lower() == 's':
+        utils.run(
+            command="sudo reboot", 
+            logger=logger
+        )
 
 if __name__ == "__main__":
     main()

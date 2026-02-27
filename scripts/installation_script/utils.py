@@ -133,6 +133,7 @@ def install_yay(logger):
         command="makepkg -si --noconfirm",
         logger=logger
     )
+
     os.chdir(os.path.expanduser("~"))
 
 def enable_system_services(packages, logger):
@@ -176,6 +177,8 @@ def apply_stow(packages, stow_path, logger):
             command=f"stow {pkg}",
             logger=logger
         )
+    
+    os.chdir(os.path.expanduser("~"))
 
 def setup_ufw(logger):
     logger.info("Configurando regras básicas do ufw")
@@ -188,7 +191,7 @@ def setup_ufw(logger):
         logger=logger
     )
     run(
-        command="sudo ufw enable", 
+        command="sudo ufw --force enable", 
         logger=logger
     )
 
