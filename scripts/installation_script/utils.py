@@ -180,20 +180,37 @@ def apply_stow(packages, stow_path, logger):
     
     os.chdir(os.path.expanduser("~"))
 
-def setup_ufw(logger):
-    logger.info("Configurando regras básicas do ufw")
+def apply_sddm_stow(stow_path, logger):
+    logger.info("Configurando o sddm")
+
+    home = Path.home()
+    path = (home / stow_path).resolve()
+    os.chdir(path)
+
     run(
-        command="sudo ufw default deny incoming", 
+        command="sudo stow -t / sddm",
         logger=logger
     )
     run(
-        command="sudo ufw default allow outgoing", 
+        command="sudo cp wallpapers/Moon_Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
         logger=logger
     )
-    run(
-        command="sudo ufw --force enable", 
-        logger=logger
-    )
+
+    os.chdir(os.path.expanduser("~"))
+
+def setup_packages(packages, logger):
+    logger.info("Inciando a configuração dos pacotes")
+
+    for pkg_data in packages:
+        pkg, *commands = pkg_data
+
+        logger.debug(f"Configurando o pacote: {pkg}")
+
+        for command in commands:
+            run(
+                command=command,
+                logger=logger   
+            )
 
 def update_grub(logger):
     if Path("/boot/grub/grub.cfg").exists():
@@ -204,3 +221,38 @@ def update_grub(logger):
         )
     else:
         logger.warning("GRUB não encontrado em /boot. Atualize manualmente.")
+
+def unpack_wallpapers(zip_path, zip_name, output_path, logger):
+    logger.info("Descomprimindo o zip com os wallpapers.")
+
+    home = Path.home()
+    path = (home / zip_path).resolve()
+    file_path = (path / zip_name).resolve()
+    os.chdir(path)
+
+    run(
+        command=f"7z x {file_path} -o{output_path}",
+        logger=logger
+    )
+
+    os.chdir(os.path.expanduser("~"))
+
+def unpack_sddm_theme(zip_path, zip_name, logger):
+    logger.info("Descomprimindo o zip com o tema do sddm.")
+
+    home = Path.home()
+    path = (home / zip_path).resolve()
+    file_path = (path / zip_name).resolve()
+    os.chdir(path)
+
+    run(
+        command=f"7z x {file_path}",
+        logger=logger
+    )
+
+    run(
+        command=f"sudo cp wallpapers/Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
+        logger=logger
+    )
+
+    os.chdir(os.path.expanduser("~"))

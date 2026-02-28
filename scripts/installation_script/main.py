@@ -38,13 +38,32 @@ def main():
         logger=logger
     )
 
+    utils.unpack_wallpapers(
+        zip_path="dotfiles",
+        zip_name="wallpapers.7z",
+        output_path="./wallpapers",
+        logger=logger
+    )
+
     utils.apply_stow(
         packages=packages.stow_packages,
         stow_path="dotfiles",
         logger=logger
     )
 
-    utils.setup_ufw(
+    utils.unpack_sddm_theme(
+        zip_path="dotfiles",
+        zip_name="sddm_theme.7z",
+        logger=logger
+    )
+
+    utils.apply_sddm_stow(
+        stow_path="dotfiles", 
+        logger=logger
+    )
+
+    utils.setup_packages(
+        packages=packages.packages_to_setup,
         logger=logger
     )
 

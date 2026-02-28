@@ -30,7 +30,7 @@ arch_packages = [
     # Ferramentas:
     "base-devel", "git", "stow", "vim", 
     "curl", "wget",
-    "unzip", "p7zip",
+    "zip", "unzip", "p7zip",
 
     # Apps:
     "firefox",
@@ -72,4 +72,21 @@ stow_packages = [
     ("kitty", ".config/kitty"), 
     ("bash", ".bashrc", ".bash_profile"), 
     ("yazi", ".config/yazi")
+]
+
+packages_to_setup = [
+    (
+        "ufw", 
+        "sudo ufw default deny incoming",
+        "sudo ufw default allow outgoing",
+        "sudo ufw --force enable"
+    ),
+    (
+        "betterlockscreen", 
+        "betterlockscreen -u dotfiles/wallpapers/Kobayashi.jpg"
+    ),
+    (
+        "flatpak", 
+        "sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+    )
 ]

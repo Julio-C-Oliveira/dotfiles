@@ -11,3 +11,5 @@ TO-DO:
     - text.
     - tray.
 - Estudar sobre o rofi.
+
+zip pass: Notebook pass.
