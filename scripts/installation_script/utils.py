@@ -316,12 +316,12 @@ def setup_gui(logger):
 
 def setup_sddm(zip_path, zip_name, stow_path, logger):
     run(
-        command="sudo pacman -S --needed --noconfirm sddm",
+        command="sudo pacman -S --needed --noconfirm sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg",
         logger=logger
     )
 
     run(
-        command="sudo systemctl enable sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg",
+        command="sudo systemctl enable sddm",
         logger=logger
     )
 
