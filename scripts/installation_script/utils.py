@@ -251,7 +251,7 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
     )
 
     run(
-        command=f"sudo cp wallpapers/Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
+        command=f"sudo cp wallpapers/Moon_Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
         logger=logger
     )
 
