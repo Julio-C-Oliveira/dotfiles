@@ -321,7 +321,7 @@ def setup_sddm(zip_path, zip_name, stow_path, logger):
     )
 
     run(
-        command="systemctl --user enable sddm",
+        command="sudo systemctl enable sddm",
         logger=logger
     )
 
