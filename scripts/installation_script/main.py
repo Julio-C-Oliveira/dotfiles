@@ -54,14 +54,7 @@ def main():
         logger=logger
     )
 
-    utils.unpack_sddm_theme(
-        zip_path="dotfiles",
-        zip_name="sddm_theme.7z",
-        logger=logger
-    )
-
-    utils.apply_sddm_stow(
-        stow_path="dotfiles", 
+    utils.setup_gui(
         logger=logger
     )
 

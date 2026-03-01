@@ -2,9 +2,6 @@ arch_packages = [
     # Display server:
     "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs",
 
-    # Gerenciador de login:
-    "sddm",
-
     # Drivers:
     "brightnessctl", "network-manager-applet", "networkmanager",
 
@@ -31,6 +28,7 @@ arch_packages = [
     "base-devel", "git", "stow", "vim", 
     "curl", "wget",
     "zip", "unzip", "p7zip",
+    "lspci",
 
     # Apps:
     "firefox",

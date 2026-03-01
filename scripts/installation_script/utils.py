@@ -261,3 +261,84 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
     )
 
     os.chdir(os.path.expanduser("~"))
+
+def install_video_drivers(logger):
+    logger.info("Instalando os drivers de video")
+
+    run(
+        command="sudo pacman -S --needed --noconfirm mesa libva-mesa-driver mesa-utils",
+        logger=logger
+    )
+    try:
+        output = subprocess.check_output("lspci | grep -E 'VGA|3D'", shell=True).decode().lower()
+        video_driver = ""
+        vulkan_driver = ""
+
+        match output:
+            case _ if "nvidia" in output:
+                video_driver = "nvidia"
+            case _ if "amd" in output or "ati" in output:
+                video_driver = "xf86-video-amdgpu"
+                vulkan_driver = "vulkan-radeon"
+            case _ if "intel" in output:
+                video_driver = "mesa" 
+                vulkan_driver = "vulkan-intel"
+            case _ if "virtualbox" in output or "vmware" in output:
+                video_driver = "virtualbox-guest-utils"
+            case _:
+                video_driver = "xf86-video-vesa"
+    except:
+        video_driver = "xf86-video-vesa"
+
+    run(
+        command=f"sudo pacman -S --needed --noconfirm {video_driver} {vulkan_driver}",
+        logger=logger
+    )
+
+def setup_gui(logger):
+    choice = input("[1] - startx\n[2] - sddm\nchoice: ")
+
+    logger.info(f"Configurando a GUI, sua escolha: {"startx" if choice == 1 else "sddm"}")
+
+    install_video_drivers(logger)
+
+    if choice == 2: setup_sddm(
+        zip_path="dotfiles",
+        zip_name="sddm_theme.7z",
+        stow_path="dotfiles",
+        logger=logger
+    )
+    else: setup_startx(
+        packages=[("xorg", ".xinitrc")],
+        stow_path="dotfiles",
+        logger=logger
+    )
+
+def setup_sddm(zip_path, zip_name, stow_path, logger):
+    run(
+        command="sudo pacman -S --needed --noconfirm sddm",
+        logger=logger
+    )
+
+    unpack_sddm_theme(
+        zip_path=zip_path,
+        zip_name=zip_name,
+        logger=logger
+    )
+
+    apply_sddm_stow(
+        stow_path=stow_path, 
+        logger=logger
+    )
+
+def setup_startx(packages, stow_path, logger):
+    run(
+        command="sudo pacman -S --needed --noconfirm startx",
+        logger=logger
+    )
+
+    apply_stow(
+        packages=packages,
+        stow_path=stow_path,
+        logger=logger
+    )
