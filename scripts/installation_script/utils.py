@@ -302,7 +302,7 @@ def setup_gui(logger):
 
     install_video_drivers(logger)
 
-    if choice == 2: setup_sddm(
+    if choice == "2": setup_sddm(
         zip_path="dotfiles",
         zip_name="sddm_theme.7z",
         stow_path="dotfiles",
@@ -338,7 +338,7 @@ def setup_sddm(zip_path, zip_name, stow_path, logger):
 
 def setup_startx(packages, stow_path, logger):
     run(
-        command="sudo pacman -S --needed --noconfirm xorg-init",
+        command="sudo pacman -S --needed --noconfirm xorg-xinit",
         logger=logger
     )
 
