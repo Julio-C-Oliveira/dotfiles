@@ -8,7 +8,10 @@ logger = utils.setup_logger(
 
 def main():
     logger.info("Atualizando o sistema")
-    utils.run("sudo pacman -Syu --noconfirm")
+    utils.run(
+        command="sudo pacman -Syu --noconfirm",
+        logger=logger
+    )
 
     utils.install_arch_packages(
         packages=packages.arch_packages,
