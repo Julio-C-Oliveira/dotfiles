@@ -28,7 +28,7 @@ arch_packages = [
     "base-devel", "git", "stow", "vim", 
     "curl", "wget",
     "zip", "unzip", "p7zip",
-    "lspci",
+    "pciutils",
 
     # Apps:
     "firefox",
