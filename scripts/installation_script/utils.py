@@ -245,7 +245,7 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
     file_path = (path / zip_name).resolve()
     os.chdir(path)
 
-    target_path = "/usr/share/sddm/themes/sddm"
+    target_path = "/usr/share/sddm/themes/sugar-candy"
 
     if target_path.exists() or target_path.is_symlink():
         logger.debug(f"Limpando: {target_path}")
