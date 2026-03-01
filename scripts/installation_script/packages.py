@@ -48,7 +48,6 @@ yay_packages = [
 ]
 
 system_packages_to_enable = [
-    "sddm",
     "NetworkManager",
     "bluetooth",
     "ufw"

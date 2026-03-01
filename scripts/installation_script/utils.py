@@ -320,6 +320,11 @@ def setup_sddm(zip_path, zip_name, stow_path, logger):
         logger=logger
     )
 
+    run(
+        command="systemctl --user enable sddm",
+        logger=logger
+    )
+
     unpack_sddm_theme(
         zip_path=zip_path,
         zip_name=zip_name,
