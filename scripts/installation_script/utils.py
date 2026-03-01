@@ -298,7 +298,7 @@ def install_video_drivers(logger):
 def setup_gui(logger):
     choice = input("[1] - startx\n[2] - sddm\nchoice: ")
 
-    logger.info(f"Configurando a GUI, sua escolha: {"startx" if choice == 1 else "sddm"}")
+    logger.info(f"Configurando a GUI, sua escolha: {"startx" if choice == "1" else "sddm"}")
 
     install_video_drivers(logger)
 
@@ -338,7 +338,7 @@ def setup_sddm(zip_path, zip_name, stow_path, logger):
 
 def setup_startx(packages, stow_path, logger):
     run(
-        command="sudo pacman -S --needed --noconfirm startx",
+        command="sudo pacman -S --needed --noconfirm xorg-init",
         logger=logger
     )
 
