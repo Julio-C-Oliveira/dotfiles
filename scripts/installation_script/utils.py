@@ -81,7 +81,7 @@ def install_arch_packages(packages, logger):
     logger.info("Instalando pacotes do Arch")
 
     for category, pkgs in packages.items():
-        logger.info(f"Instalando categoria: {category_name}")
+        logger.info(f"Instalando categoria: {category}")
         
         run(
             command=f"sudo pacman -S --needed --noconfirm {' '.join(pkgs)}", 
@@ -92,7 +92,7 @@ def install_yay_packages(packages, logger):
     logger.info("Instalando pacotes do AUR pelo yay")
 
     for category, pkgs in packages.items():
-        logger.info(f"Instalando categoria: {category_name}")
+        logger.info(f"Instalando categoria: {category}")
         
         run(
             command=f"yay -S --needed --noconfirm {' '.join(pkgs)}", 
