@@ -80,7 +80,7 @@ def run(command, logger, shell=False):
 def install_arch_packages(packages, logger):
     logger.info("Instalando pacotes do Arch")
 
-    for category, pkgs in packages_dict.items():
+    for category, pkgs in packages.items():
         logger.info(f"Instalando categoria: {category_name}")
         
         run(
@@ -91,7 +91,7 @@ def install_arch_packages(packages, logger):
 def install_yay_packages(packages, logger):
     logger.info("Instalando pacotes do AUR pelo yay")
 
-    for category, pkgs in packages_dict.items():
+    for category, pkgs in packages.items():
         logger.info(f"Instalando categoria: {category_name}")
         
         run(
