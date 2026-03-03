@@ -41,6 +41,9 @@
             "feh", "flameshot", "dunst", "lxappearance",
             "flatpak", "fastfetch"
         ],
+        "gaming" : [
+            "steam", "protontricks", "gamescope"
+        ],
         "others" : [
             "gnome-themes-extra"
         ]
@@ -48,6 +51,9 @@
     "yay_packages" : {
         "tools" : [
             "betterlockscreen", "webapp-manager"
+        ],
+        "gaming" : [
+            "protonup-qt", "game-devices-udev"
         ],
         "fonts" : [
             "ttf-meslo-nerd-font-powerlevel10k", "ttf-firacode-nerd", "noto-fonts-cjk",

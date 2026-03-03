@@ -306,7 +306,7 @@ def install_video_drivers(logger):
     logger.info("Instalando os drivers de video")
 
     run(
-        command="sudo pacman -S --needed --noconfirm mesa libva-mesa-driver mesa-utils",
+        command="sudo pacman -S --needed --noconfirm mesa lib32-mesa libva-mesa-driver mesa-utils",
         logger=logger
     )
     try:
@@ -316,22 +316,20 @@ def install_video_drivers(logger):
 
         match output:
             case _ if "nvidia" in output:
-                video_driver = "nvidia"
+                packages = ["nvidia", "nvidia-utils", "lib32-nvidia-utils"]
             case _ if "amd" in output or "ati" in output:
-                video_driver = "xf86-video-amdgpu"
-                vulkan_driver = "vulkan-radeon"
+                packages = ["xf86-video-amdgpu", "vulkan-radeon", "lib32-vulkan-radeon"]
             case _ if "intel" in output:
-                video_driver = "mesa" 
-                vulkan_driver = "vulkan-intel"
+                packages = ["mesa", "vulkan-intel", "lib32-vulkan-intel"]
             case _ if "virtualbox" in output or "vmware" in output:
-                video_driver = "virtualbox-guest-utils"
+                packages = ["virtualbox-guest-utils"]
             case _:
-                video_driver = "xf86-video-vesa"
+                packages = ["xf86-video-vesa"]
     except:
-        video_driver = "xf86-video-vesa"
+        packages = ["xf86-video-vesa"]
 
     run(
-        command=f"sudo pacman -S --needed --noconfirm {video_driver} {vulkan_driver}",
+        command=f"sudo pacman -S --needed --noconfirm {' '.join(packages)}",
         logger=logger
     )
 
