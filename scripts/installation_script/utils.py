@@ -71,11 +71,30 @@ def setup_logger(name, log_file, logs_folder, level=logging.DEBUG):
 def run(command, logger, shell=False):
     try:
         cmd = command if shell else command.split()
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, shell=shell)
         logger.debug(f"Sucesso ao executar: {command}")
     except subprocess.CalledProcessError as e:
         logger.error(f"Erro ao executar: {command}")
         exit(1)
+
+def setup_pacman(logger):
+    logger.info("Configurando o pacman.conf")
+    
+    pacman_conf = "/etc/pacman.conf"
+
+    commands = [
+        f"sudo sed -i 's/^#Color/Color/' {pacman_conf}",
+        f"grep -q 'ILoveCandy' {pacman_conf} || sudo sed -i '/^Color/a ILoveCandy' {pacman_conf}",
+        f"sudo sed -i 's/^#CheckSpace/CheckSpace/' {pacman_conf}",
+        f"sudo sed -i 's/^#ParallelDownloads/ParallelDownloads/' {pacman_conf}"
+    ]
+
+    for command in commands:
+        run(
+            command=command,
+            logger=logger,
+            shell=True
+        )
 
 def install_arch_packages(packages, logger):
     logger.info("Instalando pacotes do Arch")

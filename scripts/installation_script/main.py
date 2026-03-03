@@ -19,6 +19,10 @@ def main():
         logger=logger
     )
 
+    utils.setup_pacman(
+        logger=logger
+    )
+
     logger.info("Atualizando o sistema")
     utils.run(
         command="sudo pacman -Syu --noconfirm",

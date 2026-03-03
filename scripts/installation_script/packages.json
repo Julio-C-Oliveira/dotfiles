@@ -81,7 +81,7 @@
         {
             "package": "betterlockscreen",
             "commands" : [
-                "betterlockscreen -u dotfiles/wallpapers/Kobayashi.jpg"
+                "betterlockscreen -u ~/dotfiles/wallpapers/Kobayashi.jpg"
             ]
         },
         {
