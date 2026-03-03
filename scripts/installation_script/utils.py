@@ -1,5 +1,8 @@
 import logging
 
+import argparse
+import json
+
 import sys
 from pathlib import Path
 
@@ -77,18 +80,24 @@ def run(command, logger, shell=False):
 def install_arch_packages(packages, logger):
     logger.info("Instalando pacotes do Arch")
 
-    run(
-        command=f"sudo pacman -S --needed --noconfirm {' '.join(packages)}", 
-        logger=logger
-    )
+    for category, pkgs in packages_dict.items():
+        logger.info(f"Instalando categoria: {category_name}")
+        
+        run(
+            command=f"sudo pacman -S --needed --noconfirm {' '.join(pkgs)}", 
+            logger=logger
+        )
 
 def install_yay_packages(packages, logger):
     logger.info("Instalando pacotes do AUR pelo yay")
-    
-    run(
-        command=f"yay -S --needed --noconfirm {' '.join(packages)}",
-        logger=logger
-    )
+
+    for category, pkgs in packages_dict.items():
+        logger.info(f"Instalando categoria: {category_name}")
+        
+        run(
+            command=f"yay -S --needed --noconfirm {' '.join(pkgs)}", 
+            logger=logger
+        )
 
 def install_ucode(logger):
     logger.info("Verificando qual ucode instalar")
@@ -158,27 +167,31 @@ def apply_stow(packages, stow_path, logger):
     home = Path.home()
     path = (home / stow_path).resolve()
     os.chdir(path)
-    
+
     for pkg_data in packages:
-        pkg, *targets = pkg_data
+        pkg = pkg_data["name"]
+        targets = pkg_data["target"]
         
         for target in targets:
             target_path = home / target
             
             if target_path.exists() or target_path.is_symlink():
-                logger.debug(f"Limpando: {target_path}")
+                logger.debug(f"Limpando conflito em: {target_path}")
                 
-                if target_path.is_dir() and not target_path.is_symlink():
-                    shutil.rmtree(target_path)
-                else:
-                    target_path.unlink()
-        
+                try:
+                    if target_path.is_dir() and not target_path.is_symlink():
+                        shutil.rmtree(target_path)
+                    else:
+                        target_path.unlink()
+                except Exception as e:
+                    logger.error(f"Erro ao remover {target_path}: {e}")
+
         run(
             command=f"stow {pkg}",
             logger=logger
         )
-    
-    os.chdir(os.path.expanduser("~"))
+
+    os.chdir(home)
 
 def apply_sddm_stow(stow_path, logger):
     logger.info("Configurando o sddm")
@@ -196,21 +209,27 @@ def apply_sddm_stow(stow_path, logger):
         logger=logger
     )
 
-    os.chdir(os.path.expanduser("~"))
+    os.chdir(home)
 
 def setup_packages(packages, logger):
     logger.info("Inciando a configuração dos pacotes")
 
-    for pkg_data in packages:
-        pkg, *commands = pkg_data
+    home = Path.home()
+    os.chdir(home)
 
-        logger.debug(f"Configurando o pacote: {pkg}")
+    for pkg_data in packages:
+        pkg_name = pkg_data["package"]
+        commands = pkg_data["commands"]
+
+        logger.info(f"Configurando o pacote: {pkg_name}")
 
         for command in commands:
             run(
                 command=command,
                 logger=logger   
             )
+
+    os.chdir(home)
 
 def update_grub(logger):
     if Path("/boot/grub/grub.cfg").exists():
@@ -235,7 +254,7 @@ def unpack_wallpapers(zip_path, zip_name, output_path, logger):
         logger=logger
     )
 
-    os.chdir(os.path.expanduser("~"))
+    os.chdir(home)
 
 def unpack_sddm_theme(zip_path, zip_name, logger):
     logger.info("Descomprimindo o zip com o tema do sddm.")
@@ -260,7 +279,8 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
         logger=logger
     )
 
-    os.chdir(os.path.expanduser("~"))
+    os.chdir(home)
+
 
 def install_video_drivers(logger):
     logger.info("Instalando os drivers de video")
@@ -347,3 +367,32 @@ def setup_startx(packages, stow_path, logger):
         stow_path=stow_path,
         logger=logger
     )
+
+def get_parse_args(logger):
+    parser = argparse.ArgumentParser(description="Script de pós instalação do Arch")
+    
+    parser.add_argument(
+        "-c", "--config", 
+        default="packages.json", 
+        help="Caminho pro JSON com as configurações (Padrão: packages.json)"
+    )
+    
+    args = parser.parse_args()
+
+    logger.info(f"Caminho do json: {args.config}")
+    return args
+
+def load_json(parse_args, logger):
+    try:
+        with open(parse_args.config, 'r') as f:
+            config = json.load(f)
+        logger.info(f"{parse_args.config} carregado com sucesso")
+        return config
+    except FileNotFoundError:
+        logger.error(f"Arquivo '{parse_args.config}' não encontrado.")
+        sys.exit(1)
+        return
+    except json.JSONDecodeError:
+        logger.error(f"O arquivo '{parse_args.config}' não é um JSON válido.")
+        sys.exit(1)
+        return

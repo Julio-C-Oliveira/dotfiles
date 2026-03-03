@@ -1,0 +1,94 @@
+{
+    "arch_packages" : {
+        "display_server" : [
+            "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs"
+        ],
+        "drivers" : [
+            "brightnessctl", "network-manager-applet", "networkmanager"
+        ],
+        "audio" : [
+            "pipewire", "pipewire-pulse", "pipewire-alsa", "wireplumber", "pavucontrol"
+        ],
+        "bluetooth" : [
+            "bluez", "bluez-utils", "blueman"
+        ],
+        "security" : [
+            "ufw"
+        ],
+        "window_manager_and_related" : [
+            "bspwm", "sxhkd", 
+            "picom", "polybar", "rofi"
+        ],
+        "system_and_integrations" : [
+            "polkit-gnome", "xdg-utils", "bash-completion", "xclip"
+        ],
+        "file_management" : [
+            "gvfs", "gvfs-mtp", "gvfs-smb"
+        ],
+        "tools" : [
+            "base-devel", "git", "stow", "vim", 
+            "curl", "wget",
+            "zip", "unzip", "p7zip",
+            "pciutils"
+        ],
+        "apps" : [
+            "firefox",
+            "kitty",
+            "yazi", 
+            "feh", "flameshot", "dunst", "lxappearance",
+            "flatpak", "fastfetch"
+        ]
+    },
+    "yay_packages" : {
+        "lockscreen" : [
+            "betterlockscreen"
+        ],
+        "fonts" : [
+            "ttf-meslo-nerd-font-powerlevel10k", "ttf-firacode-nerd", "noto-fonts-cjk",
+            "noto-fonts-emoji"
+        ]
+    },
+    "system_packages_to_enable" : [
+        "NetworkManager",
+        "bluetooth",
+        "ufw"
+    ],
+    "user_packages_to_enable" : [
+        "pipewire",
+        "pipewire-pulse",
+        "wireplumber"
+    ],
+    "stow_packages" : [
+        {"name" : "bspwm", "target" : [".config/bspwm"]},
+        {"name" : "sxhkd", "target" : [".config/sxhkd"]},
+        {"name" : "picom", "target" : [".config/picom"]},
+        {"name" : "polybar", "target" : [".config/polybar"]},
+        {"name" : "rofi", "target" : [".config/rofi"]},
+        {"name" : "git", "target" : [".gitconfig"]},
+        {"name" : "kitty", "target" : [".config/kitty"]},
+        {"name" : "bash", "target" : [".bashrc", ".bash_profile"]},
+        {"name" : "yazi", "target" : [".config/yazi"]}
+    ],
+    "packages_to_setup" : [
+        {
+            "package": "ufw",
+            "commands" : [
+                "sudo ufw default deny incoming",
+                "sudo ufw default allow outgoing",
+                "sudo ufw --force enable"
+            ]
+        },
+        {
+            "package": "betterlockscreen",
+            "commands" : [
+                "betterlockscreen -u dotfiles/wallpapers/Kobayashi.jpg"
+            ]
+        },
+        {
+            "package": "flatpak",
+            "commands" : [
+                "sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+            ]
+        }
+    ]
+}
