@@ -79,6 +79,12 @@ def main():
         logger=logger
     )
 
+    utils.run(
+        command="dbus-launch gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'",
+        logger=logger,
+        shell=True
+    )
+
     utils.update_grub(
         logger=logger
     )

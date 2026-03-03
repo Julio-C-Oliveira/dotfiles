@@ -45,7 +45,7 @@
             "steam", "protontricks", "gamescope"
         ],
         "others" : [
-            "gnome-themes-extra"
+            "gnome-themes-extra", "qt5ct", "qt6ct"
         ]
     },
     "yay_packages" : {
@@ -79,7 +79,8 @@
         {"name" : "git", "target" : [".gitconfig"]},
         {"name" : "kitty", "target" : [".config/kitty"]},
         {"name" : "bash", "target" : [".bashrc", ".bash_profile"]},
-        {"name" : "yazi", "target" : [".config/yazi"]}
+        {"name" : "yazi", "target" : [".config/yazi"]},
+        {"name" : "theme", "target" : [".config/gtk-3.0", ".config/qt5ct", ".config/qt6ct", ".config/QtProject.conf"]}
     ],
     "packages_to_setup" : [
         {
