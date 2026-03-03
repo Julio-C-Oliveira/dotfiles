@@ -1,5 +1,8 @@
 {
     "arch_packages" : {
+        "kernel" : [
+            "linux-lts-headers"
+        ],
         "display_server" : [
             "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs"
         ],
@@ -37,11 +40,20 @@
             "yazi", 
             "feh", "flameshot", "dunst", "lxappearance",
             "flatpak", "fastfetch"
+        ],
+        "gaming" : [
+            "steam", "protontricks", "gamescope"
+        ],
+        "others" : [
+            "gnome-themes-extra", "qt5ct", "qt6ct"
         ]
     },
     "yay_packages" : {
-        "lockscreen" : [
-            "betterlockscreen"
+        "tools" : [
+            "betterlockscreen", "webapp-manager"
+        ],
+        "gaming" : [
+            "protonup-qt", "game-devices-udev"
         ],
         "fonts" : [
             "ttf-meslo-nerd-font-powerlevel10k", "ttf-firacode-nerd", "noto-fonts-cjk",
@@ -67,7 +79,8 @@
         {"name" : "git", "target" : [".gitconfig"]},
         {"name" : "kitty", "target" : [".config/kitty"]},
         {"name" : "bash", "target" : [".bashrc", ".bash_profile"]},
-        {"name" : "yazi", "target" : [".config/yazi"]}
+        {"name" : "yazi", "target" : [".config/yazi"]},
+        {"name" : "theme", "target" : [".config/gtk-3.0", ".config/qt5ct", ".config/qt6ct", ".config/QtProject.conf"]}
     ],
     "packages_to_setup" : [
         {
@@ -81,7 +94,7 @@
         {
             "package": "betterlockscreen",
             "commands" : [
-                "betterlockscreen -u dotfiles/wallpapers/Kobayashi.jpg"
+                "betterlockscreen -u ~/dotfiles/wallpapers/Kobayashi.jpg"
             ]
         },
         {

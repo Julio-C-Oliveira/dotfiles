@@ -71,17 +71,37 @@ def setup_logger(name, log_file, logs_folder, level=logging.DEBUG):
 def run(command, logger, shell=False):
     try:
         cmd = command if shell else command.split()
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, shell=shell)
         logger.debug(f"Sucesso ao executar: {command}")
     except subprocess.CalledProcessError as e:
         logger.error(f"Erro ao executar: {command}")
         exit(1)
 
+def setup_pacman(logger):
+    logger.info("Configurando o pacman.conf")
+    
+    pacman_conf = "/etc/pacman.conf"
+
+    commands = [
+        f"sudo sed -i 's/^#Color/Color/' {pacman_conf}",
+        f"grep -q 'ILoveCandy' {pacman_conf} || sudo sed -i '/^Color/a ILoveCandy' {pacman_conf}",
+        f"sudo sed -i 's/^#CheckSpace/CheckSpace/' {pacman_conf}",
+        f"sudo sed -i 's/^#ParallelDownloads/ParallelDownloads/' {pacman_conf}",
+        f"sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//' {pacman_conf}"
+    ]
+
+    for command in commands:
+        run(
+            command=command,
+            logger=logger,
+            shell=True
+        )
+
 def install_arch_packages(packages, logger):
     logger.info("Instalando pacotes do Arch")
 
-    for category, pkgs in packages_dict.items():
-        logger.info(f"Instalando categoria: {category_name}")
+    for category, pkgs in packages.items():
+        logger.info(f"Instalando categoria: {category}")
         
         run(
             command=f"sudo pacman -S --needed --noconfirm {' '.join(pkgs)}", 
@@ -91,8 +111,8 @@ def install_arch_packages(packages, logger):
 def install_yay_packages(packages, logger):
     logger.info("Instalando pacotes do AUR pelo yay")
 
-    for category, pkgs in packages_dict.items():
-        logger.info(f"Instalando categoria: {category_name}")
+    for category, pkgs in packages.items():
+        logger.info(f"Instalando categoria: {category}")
         
         run(
             command=f"yay -S --needed --noconfirm {' '.join(pkgs)}", 
@@ -286,7 +306,7 @@ def install_video_drivers(logger):
     logger.info("Instalando os drivers de video")
 
     run(
-        command="sudo pacman -S --needed --noconfirm mesa libva-mesa-driver mesa-utils",
+        command="sudo pacman -S --needed --noconfirm mesa lib32-mesa libva-mesa-driver mesa-utils",
         logger=logger
     )
     try:
@@ -296,22 +316,20 @@ def install_video_drivers(logger):
 
         match output:
             case _ if "nvidia" in output:
-                video_driver = "nvidia"
+                packages = ["nvidia", "nvidia-utils", "lib32-nvidia-utils"]
             case _ if "amd" in output or "ati" in output:
-                video_driver = "xf86-video-amdgpu"
-                vulkan_driver = "vulkan-radeon"
+                packages = ["xf86-video-amdgpu", "vulkan-radeon", "lib32-vulkan-radeon"]
             case _ if "intel" in output:
-                video_driver = "mesa" 
-                vulkan_driver = "vulkan-intel"
+                packages = ["mesa", "vulkan-intel", "lib32-vulkan-intel"]
             case _ if "virtualbox" in output or "vmware" in output:
-                video_driver = "virtualbox-guest-utils"
+                packages = ["virtualbox-guest-utils"]
             case _:
-                video_driver = "xf86-video-vesa"
+                packages = ["xf86-video-vesa"]
     except:
-        video_driver = "xf86-video-vesa"
+        packages = ["xf86-video-vesa"]
 
     run(
-        command=f"sudo pacman -S --needed --noconfirm {video_driver} {vulkan_driver}",
+        command=f"sudo pacman -S --needed --noconfirm {' '.join(packages)}",
         logger=logger
     )
 

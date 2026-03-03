@@ -19,6 +19,10 @@ def main():
         logger=logger
     )
 
+    utils.setup_pacman(
+        logger=logger
+    )
+
     logger.info("Atualizando o sistema")
     utils.run(
         command="sudo pacman -Syu --noconfirm",
@@ -73,6 +77,12 @@ def main():
     utils.setup_packages(
         packages=configs["packages_to_setup"],
         logger=logger
+    )
+
+    utils.run(
+        command="dbus-launch gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'",
+        logger=logger,
+        shell=True
     )
 
     utils.update_grub(

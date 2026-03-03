@@ -2,3 +2,15 @@
 2026-03-03 12:36:26 [ERROR] [Arch] Arquivo 'packages.json' não encontrado.
 2026-03-03 12:39:32 [INFO] [Arch] Caminho do json: packages.json
 2026-03-03 12:39:32 [ERROR] [Arch] Arquivo 'packages.json' não encontrado.
+2026-03-03 15:22:28 [INFO] [Arch] Adicionando ILoveCandy ao pacman.conf
+2026-03-03 15:22:38 [ERROR] [Arch] Erro ao executar: sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+2026-03-03 15:25:47 [INFO] [Arch] Adicionando ILoveCandy ao pacman.conf
+2026-03-03 15:25:47 [ERROR] [Arch] Erro ao executar: sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+2026-03-03 15:27:09 [INFO] [Arch] Configurando o pacman.conf
+2026-03-03 15:27:09 [ERROR] [Arch] Erro ao executar: sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+2026-03-03 15:28:52 [INFO] [Arch] Configurando o pacman.conf
+2026-03-03 15:31:16 [INFO] [Arch] Configurando o pacman.conf
+2026-03-03 15:31:16 [DEBUG] [Arch] Sucesso ao executar: sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+2026-03-03 15:31:16 [DEBUG] [Arch] Sucesso ao executar: grep -q 'ILoveCandy' /etc/pacman.conf || sudo sed -i '/^Color/a ILoveCandy' /etc/pacman.conf
+2026-03-03 15:31:16 [DEBUG] [Arch] Sucesso ao executar: sudo sed -i 's/^#CheckSpace/CheckSpace/' /etc/pacman.conf
+2026-03-03 15:31:17 [DEBUG] [Arch] Sucesso ao executar: sudo sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
