@@ -86,7 +86,8 @@ def setup_pacman(logger):
         f"sudo sed -i 's/^#Color/Color/' {pacman_conf}",
         f"grep -q 'ILoveCandy' {pacman_conf} || sudo sed -i '/^Color/a ILoveCandy' {pacman_conf}",
         f"sudo sed -i 's/^#CheckSpace/CheckSpace/' {pacman_conf}",
-        f"sudo sed -i 's/^#ParallelDownloads/ParallelDownloads/' {pacman_conf}"
+        f"sudo sed -i 's/^#ParallelDownloads/ParallelDownloads/' {pacman_conf}",
+        f"sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//' {pacman_conf}"
     ]
 
     for command in commands:
