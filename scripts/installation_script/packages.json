@@ -1,5 +1,8 @@
 {
     "arch_packages" : {
+        "kernel" : [
+            "linux-lts-headers"
+        ],
         "display_server" : [
             "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs"
         ],
@@ -37,11 +40,14 @@
             "yazi", 
             "feh", "flameshot", "dunst", "lxappearance",
             "flatpak", "fastfetch"
+        ],
+        "others" : [
+            "gnome-themes-extra"
         ]
     },
     "yay_packages" : {
-        "lockscreen" : [
-            "betterlockscreen"
+        "tools" : [
+            "betterlockscreen", "webapp-manager"
         ],
         "fonts" : [
             "ttf-meslo-nerd-font-powerlevel10k", "ttf-firacode-nerd", "noto-fonts-cjk",
