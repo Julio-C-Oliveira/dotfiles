@@ -1,12 +1,24 @@
-import utils, packages
-
-logger = utils.setup_logger(
-    name="Arch",
-    log_file="install.log",
-    logs_folder="./"
-)
+import json
+import utils
+import argparse
+import sys
 
 def main():
+    logger = utils.setup_logger(
+        name="Arch",
+        log_file="install.log",
+        logs_folder="./"
+    )
+
+    parse_args = utils.get_parse_args(
+        logger=logger
+    )
+
+    configs = utils.load_json(
+        parse_args=parse_args,
+        logger=logger
+    )
+
     logger.info("Atualizando o sistema")
     utils.run(
         command="sudo pacman -Syu --noconfirm",
@@ -14,7 +26,7 @@ def main():
     )
 
     utils.install_arch_packages(
-        packages=packages.arch_packages,
+        packages=configs["arch_packages"],
         logger=logger
     )
 
@@ -23,7 +35,7 @@ def main():
     )
 
     utils.install_yay_packages(
-        packages=packages.yay_packages,
+        packages=configs["yay_packages"],
         logger=logger
     )
 
@@ -32,12 +44,12 @@ def main():
     )
 
     utils.enable_system_services(
-        packages=packages.system_packages_to_enable,
+        packages=configs["system_packages_to_enable"],
         logger=logger
     )
 
     utils.enable_user_services(
-        packages=packages.user_packages_to_enable,
+        packages=configs["user_packages_to_enable"],
         logger=logger
     )
 
@@ -49,7 +61,7 @@ def main():
     )
 
     utils.apply_stow(
-        packages=packages.stow_packages,
+        packages=configs["stow_packages"],
         stow_path="dotfiles",
         logger=logger
     )
@@ -59,7 +71,7 @@ def main():
     )
 
     utils.setup_packages(
-        packages=packages.packages_to_setup,
+        packages=configs["packages_to_setup"],
         logger=logger
     )
 
@@ -76,5 +88,6 @@ def main():
             logger=logger
         )
 
+    
 if __name__ == "__main__":
     main()
