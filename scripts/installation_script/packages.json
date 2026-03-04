@@ -45,7 +45,7 @@
             "steam", "protontricks", "gamescope"
         ],
         "others" : [
-            "gnome-themes-extra", "qt5ct", "qt6ct"
+            "gnome-themes-extra", "qt5ct", "qt6ct", "numlockx"
         ]
     },
     "yay_packages" : {

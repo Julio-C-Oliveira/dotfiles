@@ -28,6 +28,7 @@ rerun() {
 
 run sxhkd
 run nm-applet
+run numlock on
 rerun picom --config $HOME/.config/picom/picom.conf -b
 
 $HOME/.config/polybar/launch.sh -b &
