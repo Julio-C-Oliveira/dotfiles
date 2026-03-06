@@ -1,0 +1,10 @@
+[opener]
+browser = [
+    { run = 'firefox "$@"', block = false, desc = "Firefox" }
+]
+
+[open]
+rules = [
+    { name = "*.html", use = "browser" },
+    { mime = "text/html", use = "browser" }
+]
