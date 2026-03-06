@@ -149,4 +149,12 @@ Print
 ctrl + shift + s
 	flameshot full -p ~/Imagens/Capturas\ de\ tela/
 
+# Tocar aúdio aleatório
+super + alt + a
+	$HOME/dotfiles/scripts/run_random_audio.sh 
+
+# Matar todas as instâncias de aúdios aleatórios
+super + alt + z
+  	pkill mpv
+
 
