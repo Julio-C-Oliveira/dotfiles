@@ -39,7 +39,8 @@
             "kitty",
             "yazi", 
             "feh", "flameshot", "dunst", "lxappearance",
-            "flatpak", "fastfetch"
+            "flatpak", "fastfetch",
+            "mpv", "yt-dlp"
         ],
         "gaming" : [
             "steam", "protontricks", "gamescope"
