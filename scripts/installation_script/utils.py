@@ -386,6 +386,14 @@ def setup_startx(packages, stow_path, logger):
         logger=logger
     )
 
+def setup_directories(logger):
+    logger.info("Criando os diretórios.")
+
+    run(
+        command="mkdir -p ~/{downloads,templates,public,music,videos} ~/pictures/screenshots ~/documents/github ~/desktop/{current_work,temporary}",
+        logger=logger
+    )
+
 def get_parse_args(logger):
     parser = argparse.ArgumentParser(description="Script de pós instalação do Arch")
     

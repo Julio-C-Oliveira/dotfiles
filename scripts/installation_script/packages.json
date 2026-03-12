@@ -81,7 +81,8 @@
         {"name" : "kitty", "target" : [".config/kitty"]},
         {"name" : "bash", "target" : [".bashrc", ".bash_profile"]},
         {"name" : "yazi", "target" : [".config/yazi"]},
-        {"name" : "theme", "target" : [".config/gtk-3.0", ".config/qt5ct", ".config/qt6ct", ".config/QtProject.conf"]}
+        {"name" : "theme", "target" : [".config/gtk-3.0", ".config/qt5ct", ".config/qt6ct", ".config/QtProject.conf"]},
+        {"name" : "dirs", "target" : [".config/user-dirs.dirs", ".config/user-dirs.locale"]}
     ],
     "packages_to_setup" : [
         {
