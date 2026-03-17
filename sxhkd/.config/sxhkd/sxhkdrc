@@ -147,7 +147,7 @@ Print
 
 # Screenshot sem GUI
 ctrl + shift + s
-	flameshot full -p ~/Imagens/Capturas\ de\ tela/
+	flameshot full -p ~/pictures/screenshots
 
 # Tocar aúdio aleatório
 super + alt + a
