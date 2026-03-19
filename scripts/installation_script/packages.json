@@ -4,7 +4,7 @@
             "linux-lts-headers"
         ],
         "display_server" : [
-            "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs"
+            "xorg-server", "xorg-xinit", "xorg-xrandr", "xf86-input-libinput", "xdg-user-dirs", "xorg-xhost"
         ],
         "drivers" : [
             "brightnessctl", "network-manager-applet", "networkmanager"
