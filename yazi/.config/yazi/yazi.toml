@@ -4,16 +4,13 @@ browser = [
 ]
 pdf_reader = [
     { run = 'firefox "$@"', block = false, desc = "Firefox" }
-    # Se preferir um leitor nativo no futuro, pode usar a linha abaixo (ex: zathura):
-    # { run = 'zathura "$@"', block = false, desc = "Zathura" }
 ]
 
 [open]
 rules = [
-    { name = "*.html", use = "browser" },
+    { url = "*.html", use = "browser" },
     { mime = "text/html", use = "browser" },
     
-    # Novas regras para PDF:
-    { name = "*.pdf", use = "pdf_reader" },
+    { url = "*.pdf", use = "pdf_reader" },
     { mime = "application/pdf", use = "pdf_reader" }
 ]

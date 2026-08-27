@@ -141,13 +141,17 @@ super + alt + q
 # OTHERS
 # --------------------------
 
-# Screenshots com GUI (Flameshot)
+# Screenshots com GUI
 Print
-	flameshot gui
+	maim -s ~/pictures/screenshots/$(date +%F-%T).png
+
+# Screenshot com GUI para área de tranferência
+Print + shift
+	bash -c "maim -s | xclip -selection clipboard -t image/png"
 
 # Screenshot sem GUI
 ctrl + shift + s
-	flameshot full -p ~/pictures/screenshots
+	maim ~/pictures/screenshots/$(date +%F-%T).png
 
 # Tocar aúdio aleatório
 super + alt + a
