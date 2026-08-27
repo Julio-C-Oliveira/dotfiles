@@ -97,14 +97,25 @@ super + g
 
 # Switch workpaces
 super + {1-9, 0}
-	bspc desktop -f '^{1-9,10}'
+	bspc desktop -f "$(bspc query -M -m pointed --names 2>/dev/null || bspc query -M -m focused --names):^{1-9,10}"
 
 super + shift + {1-9, 0}
-	bspc node -d '^{1-9,10}' --follow
+	bspc node -d "$(bspc query -M -m pointed --names 2>/dev/null || bspc query -M -m focused --names):^{1-9,10}" --follow
 
 # focus the next/previous desktop in the current monitor
 super + bracket{left,right}
 	bspc desktop -f {prev,next}.local
+
+# Focar o próximo/anterior monitor (e mover o mouse junto)
+super + Tab
+	$HOME/dotfiles/scripts/bspwm_focus_monitor.sh next
+
+super + shift + Tab
+	$HOME/dotfiles/scripts/bspwm_focus_monitor.sh prev
+
+# Mover a janela atual para o próximo/anterior monitor (e seguir)
+super + alt + shift + {Left, Right}
+	bspc node -m {prev,next} --follow
 
 # ---------------------------
 # SOUND AND BRIGHTNESS
