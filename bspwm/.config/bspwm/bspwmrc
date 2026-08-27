@@ -32,7 +32,7 @@ systemctl --user start bspwm-session.target
 run caffeine start
 run sxhkd
 run nm-applet
-run numlock on
+run numlockx on
 rerun picom --config $HOME/.config/picom/picom.conf -b
 
 $HOME/.config/polybar/launch.sh -b &

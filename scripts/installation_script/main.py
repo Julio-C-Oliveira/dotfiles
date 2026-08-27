@@ -64,6 +64,10 @@ def main():
         logger=logger
     )
 
+    utils.setup_directories(
+        logger=logger
+    )
+
     utils.apply_stow(
         packages=configs["stow_packages"],
         stow_path="dotfiles",
@@ -76,10 +80,6 @@ def main():
 
     utils.setup_packages(
         packages=configs["packages_to_setup"],
-        logger=logger
-    )
-
-    utils.setup_directories(
         logger=logger
     )
 

@@ -23,7 +23,7 @@
             "picom", "polybar", "rofi"
         ],
         "system_and_integrations" : [
-            "polkit-gnome", "xdg-utils", "bash-completion", "xclip"
+            "polkit-gnome", "xdg-utils", "bash-completion", "xclip", "dconf", "libnotify"
         ],
         "file_management" : [
             "gvfs", "gvfs-mtp", "gvfs-smb"
@@ -32,15 +32,17 @@
             "base-devel", "git", "stow", "vim", 
             "curl", "wget",
             "zip", "unzip", "p7zip",
-            "pciutils"
+            "pciutils",
+            "ripgrep", "fd"
         ],
         "apps" : [
             "firefox",
             "kitty",
             "yazi", 
-            "feh", "flameshot", "dunst", "lxappearance",
+            "feh", "maim", "dunst", "lxappearance",
             "flatpak", "fastfetch",
-            "mpv", "yt-dlp"
+            "mpv", "yt-dlp",
+            "github-cli"
         ],
         "gaming" : [
             "steam", "protontricks", "gamescope"
@@ -51,7 +53,7 @@
     },
     "yay_packages" : {
         "tools" : [
-            "betterlockscreen", "webapp-manager"
+            "betterlockscreen", "webapp-manager", "caffeine-ng"
         ],
         "gaming" : [
             "protonup-qt", "game-devices-udev"

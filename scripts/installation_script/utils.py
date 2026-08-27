@@ -290,8 +290,9 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
     )
 
     run(
-        command="sudo mv sugar-candy /usr/share/sddm/themes/",
-        logger=logger
+        command="sudo rm -rf /usr/share/sddm/themes/sugar-candy && sudo mv sugar-candy /usr/share/sddm/themes/",
+        logger=logger,
+        shell=True
     )
 
     run(
@@ -347,7 +348,7 @@ def setup_gui(logger):
         logger=logger
     )
     else: setup_startx(
-        packages=[("xorg", ".xinitrc")],
+        packages=[{"name": "xorg", "target": [".xinitrc"]}],
         stow_path="dotfiles",
         logger=logger
     )
@@ -390,7 +391,7 @@ def setup_directories(logger):
     logger.info("Criando os diretórios.")
 
     run(
-        command="mkdir -p ~/{downloads,templates,public,music,videos} ~/pictures/screenshots ~/documents/github ~/desktop/{current_work,temporary}",
+        command="mkdir -p ~/.config ~/{downloads,templates,public,music,videos} ~/pictures/screenshots ~/documents/github ~/desktop/{current_work,temporary}",
         logger=logger
     )
 

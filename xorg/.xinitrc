@@ -9,7 +9,7 @@ export DESKTOP_SESSION=bspwm
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 
 # Váriaveis gerais:
-export EDITOR=nvim
+export EDITOR=vim
 
 # Teclado:
 setxkbmap -layout br -variant abnt2 -option lv3:ralt_switch
