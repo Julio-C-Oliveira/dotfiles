@@ -26,7 +26,7 @@
             "polkit-gnome", "xdg-utils", "bash-completion", "xclip", "dconf", "libnotify"
         ],
         "file_management" : [
-            "gvfs", "gvfs-mtp", "gvfs-smb"
+            "gvfs", "gvfs-mtp", "gvfs-smb", "udisks2"
         ],
         "tools" : [
             "base-devel", "git", "stow", "vim", 
@@ -105,6 +105,12 @@
             "package": "flatpak",
             "commands" : [
                 "sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+            ]
+        },
+        {
+            "package": "yazi",
+            "commands" : [
+                "ya pkg install"
             ]
         }
     ]
