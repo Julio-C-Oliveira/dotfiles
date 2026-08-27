@@ -92,6 +92,9 @@ keymap = [
 	{ on = [ "m", "o" ], run = "linemode owner",       desc = "Linemode: owner" },
 	{ on = [ "m", "n" ], run = "linemode none",        desc = "Linemode: none" },
 
+	# Mount
+	{ on = [ "m", "d" ], run = "plugin mount", desc = "Gerenciador de Dispositivos (Montar/Desmontar)" },
+
 	# Copy
 	{ on = [ "c", "c" ], run = "copy path",             desc = "Copy the file path" },
 	{ on = [ "c", "d" ], run = "copy dirname",          desc = "Copy the directory path" },
