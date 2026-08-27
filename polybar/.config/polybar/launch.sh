@@ -9,12 +9,11 @@ while pgrep -u "$USER" -x polybar >/dev/null; do sleep 1; done
 # Detecta o monitor primário (ou o primeiro da lista como fallback)
 primary_mon=$(bspc query -M -m primary --names 2>/dev/null || bspc query -M --names | head -n 1)
 
-# Inicia a polybar atribuindo o tray apenas para o monitor principal
+# Inicia top_primary na tela principal e top_secondary nas telas secundárias
 for mon in $(bspc query -M --names); do
     if [ "$mon" = "$primary_mon" ]; then
-        TRAY="tray"
+        MONITOR=$mon polybar top_primary &
     else
-        TRAY=""
+        MONITOR=$mon polybar top_secondary &
     fi
-    MONITOR=$mon TRAY_MODULE=$TRAY polybar top_primary &
 done
