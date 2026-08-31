@@ -77,7 +77,7 @@ super + {Left, Down, Up, Right}
 
 # Move focused window
 super + shift + {Left, Down, Up, Right}
-	bspc node -m {west, south, north, east} --follow || bspc node -s {west, south, north, east}
+	bspc node -s {west, south, north, east} || bspc node -m {west, south, north, east} --follow
 
 # Resize
 super + ctrl + {Left, Down, Up, Right}
