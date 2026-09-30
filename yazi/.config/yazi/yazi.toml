@@ -1,16 +1,20 @@
 [opener]
 browser = [
-    { run = 'firefox "$@"', block = false, desc = "Firefox" }
+    { run = 'xdg-open %s1', orphan = true, desc = "xdg-open" },
+    { run = 'firefox %s1', orphan = true, desc = "Firefox" }
 ]
 pdf_reader = [
-    { run = 'firefox "$@"', block = false, desc = "Firefox" }
+    { run = 'xdg-open %s1', orphan = true, desc = "xdg-open" },
+    { run = 'firefox %s1', orphan = true, desc = "Firefox" }
 ]
 
 [open]
-rules = [
+prepend_rules = [
     { url = "*.html", use = "browser" },
     { mime = "text/html", use = "browser" },
     
     { url = "*.pdf", use = "pdf_reader" },
     { mime = "application/pdf", use = "pdf_reader" }
 ]
+
+

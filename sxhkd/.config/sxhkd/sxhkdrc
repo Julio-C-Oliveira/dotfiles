@@ -144,9 +144,13 @@ super + ctrl + shift + KP_Subtract
 super + ctrl + alt + {s, r}
 	{shutdown 0, reboot}
 
-# Lock Screen
+# Lock Screen (Mudo)
 super + alt + q
-	betterlockscreen -l
+    $HOME/.local/bin/lock.sh
+
+# Lock Screen (Com Áudio)
+super + alt + shift + q
+    $HOME/.local/bin/lock.sh audio
 
 # --------------------------
 # OTHERS
