@@ -22,3 +22,22 @@
 
 # Descartar alterações locais e remover da staging area (reset total)
     git restore --staged --worktree caminho/do/arquivo
+
+# --------------------------
+# XRANDR
+# --------------------------
+
+# Listar monitores conectados e resoluções suportadas
+    xrandr --query | grep " connected"
+
+# Estender monitor secundário à direita do monitor principal
+    xrandr --output HDMI-1 --auto --right-of eDP-1
+
+# Estender monitor secundário à esquerda do monitor principal
+    xrandr --output HDMI-1 --auto --left-of eDP-1
+
+# Espelhar imagem de um monitor no outro
+    xrandr --output HDMI-1 --auto --same-as eDP-1
+
+# Exemplo multi-monitor: um à esquerda, um à direita e um espelhado
+    xrandr --output DP-1 --primary --auto --output HDMI-1 --auto --right-of DP-1 --output eDP-1 --auto --left-of DP-1 --output DP-2 --auto --same-as DP-1

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 import os
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
-# Localização do arquivo de anotações
 COMMANDS_FILE = Path.home() / "dotfiles" / "others" / "commands.txt"
 
 
@@ -45,12 +44,11 @@ def parse_commands(file_path: Path):
       i += 1
       continue
 
-    # Linhas vazias
     if not line:
       i += 1
       continue
 
-    # Qualquer linha que não seja comentário é tratada como comando
+    # Linha do comando
     cmd = line
     desc = current_desc if current_desc else "(sem descrição)"
     entries.append((current_cat, desc, cmd))
@@ -61,6 +59,10 @@ def parse_commands(file_path: Path):
   return entries
 
 
+def escape_pango(text: str) -> str:
+  return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def main():
   if not COMMANDS_FILE.is_file():
     subprocess.run(
@@ -69,38 +71,56 @@ def main():
     sys.exit(1)
 
   entries = parse_commands(COMMANDS_FILE)
-
   if not entries:
     sys.exit(0)
 
-  # Calcula automaticamente a maior categoria e a maior descrição da lista
-  max_cat = max(len(cat) for cat, _, _ in entries)
-  max_desc = max(len(desc) for _, desc, _ in entries)
+  formatted_rows = []
+  commands_map = []
 
-  # Define larguras mínimas de respiro estético
-  cat_width = max(max_cat, 16)
-  desc_width = max(max_desc, 30)
+  # Gera duas linhas nativas no Rofi para cada entrada
+  for cat, desc, cmd in entries:
+    c = escape_pango(cat)
+    d = escape_pango(desc)
+    k = escape_pango(cmd)
 
-  # Formata com largura dinâmica: o '│' fica sempre na mesma coluna vertical
-  formatted_rows = [
-      f"{cat:<{cat_width}} │ {desc:<{desc_width}} │ {cmd}"
-      for cat, desc, cmd in entries
-  ]
+    # Linha 1: Descrição
+    formatted_rows.append(
+        f"<b><span foreground='#7dcfff'>[{c}]</span>  {d}</b>"
+    )
+    commands_map.append(cmd)
+
+    # Linha 2: Comando indentado com quase a largura total da tela
+    formatted_rows.append(f"<span foreground='#9ece6a'>       ↳  {k}</span>")
+    commands_map.append(cmd)
+
   menu_input = "\n".join(formatted_rows)
 
   rofi_cmd = [
       "rofi",
       "-dmenu",
       "-i",
+      "-markup-rows",
       "-format",
       "i",
       "-p",
       "⚡ Comandos",
       "-theme-str",
       """
-        window { width: 85%; }
-        listview { lines: 18; columns: 1; }
-        entry { placeholder: "Buscar comando por categoria, ação ou sintaxe..."; }
+        window { 
+            width: 85%; 
+        }
+        listview { 
+            lines: 14; 
+            columns: 1; 
+            spacing: 2px;
+        }
+        element { 
+            padding: 5px 12px; 
+            border-radius: 4px;
+        }
+        entry { 
+            placeholder: "Buscar comando por categoria, ação ou sintaxe..."; 
+        }
       """,
   ]
 
@@ -108,9 +128,10 @@ def main():
       rofi_cmd, input=menu_input, text=True, capture_output=True
   )
 
+  # Se selecionou qualquer linha (descrição ou comando)
   if res.returncode == 0 and res.stdout.strip().isdigit():
     idx = int(res.stdout.strip())
-    selected_cmd = entries[idx][2]
+    selected_cmd = commands_map[idx]
 
     subprocess.run(
         ["xclip", "-selection", "clipboard"],
