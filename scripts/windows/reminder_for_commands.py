@@ -83,14 +83,18 @@ def main():
     d = escape_pango(desc)
     k = escape_pango(cmd)
 
-    # Linha 1: Descrição
+    # Linha 1: [CATEGORIA] em Roxo + Descrição em Branco
     formatted_rows.append(
-        f"<b><span foreground='#7dcfff'>[{c}]</span>  {d}</b>"
+        f"<b><span foreground='#bd93f9'>[{c}]</span>  <span"
+        f" foreground='#f8f8f2'>{d}</span></b>"
     )
     commands_map.append(cmd)
 
-    # Linha 2: Comando indentado com quase a largura total da tela
-    formatted_rows.append(f"<span foreground='#9ece6a'>       ↳  {k}</span>")
+    # Linha 2: Seta em Rosa + Comando em Ciano (#8be9fd) ou Verde (#50fa7b)
+    formatted_rows.append(
+        f"<span foreground='#ff79c6'>       ↳</span>  <span"
+        f" foreground='#50fa7b'>{k}</span>"
+    )
     commands_map.append(cmd)
 
   menu_input = "\n".join(formatted_rows)

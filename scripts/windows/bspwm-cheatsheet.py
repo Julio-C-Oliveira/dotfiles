@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import os
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 
 def get_sxhkdrc_path() -> Path:
@@ -28,51 +28,49 @@ def parse_sxhkdrc(file_path: Path):
     raw_line = lines[i].rstrip("\r\n")
     line = raw_line.strip()
 
-    # 1. Detecta cabeçalhos de bloco (# -----)
+    # Detecta cabeçalhos de bloco (# -----)
     if re.match(r"^#\s*-{3,}", line):
       i += 1
-      # Captura o nome da categoria no meio das divisórias
       if i < n:
         cat_candidate = lines[i].strip().lstrip("#").strip()
-        # Se não for outra linha de traços, é a categoria
         if cat_candidate and not re.match(r"^-{3,}", cat_candidate):
           current_cat = cat_candidate
           i += 1
-          # Pula o traço de fechamento (# -----) se existir
           if i < n and re.match(r"^#\s*-{3,}", lines[i].strip()):
             i += 1
-
-      current_desc = ""  # Reseta qualquer descrição ao trocar de categoria
+      current_desc = ""
       continue
 
-    # 2. Comentários (descrição do atalho)
+    # Comentários (descrição)
     if line.startswith("#"):
       desc = line.lstrip("#").strip()
-      # Ignora linhas com apenas '#' vazio ou traços soltos
       if desc and not re.match(r"^-+$", desc):
         current_desc = desc
       i += 1
       continue
 
-    # 3. Linhas vazias
     if not line:
       i += 1
       continue
 
-    # 4. Linhas indentadas (são os comandos executados pelo sxhkd, ignoramos)
+    # Comandos indentados do sxhkd (ignora)
     if raw_line.startswith((" ", "\t")):
       i += 1
       continue
 
-    # 5. Se chegou aqui na coluna 0, é a linha do atalho
+    # Atalho (coluna 0)
     key = line
     desc = current_desc if current_desc else "(sem descrição)"
     entries.append((current_cat, key, desc))
 
-    current_desc = ""  # Consome a descrição para não vazar pro próximo atalho
+    current_desc = ""
     i += 1
 
   return entries
+
+
+def escape_pango(text: str) -> str:
+  return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def main():
@@ -85,24 +83,61 @@ def main():
     sys.exit(1)
 
   entries = parse_sxhkdrc(conf_path)
+  if not entries:
+    sys.exit(0)
 
-  # Ajuste de largura: Categoria (24) │ Atalho (38) │ Descrição
-  formatted_rows = [
-      f"{cat:<24} │ {key:<38} │ {desc}" for cat, key, desc in entries
-  ]
+  # Mede larguras máximas reais
+  max_cat = max(len(cat) for cat, _, _ in entries)
+  max_key = max(len(key) for _, key, _ in entries)
+
+  cat_w = max(max_cat, 18)
+  key_w = max(max_key, 28)
+
+  formatted_rows = []
+  for cat, key, desc in entries:
+    padded_cat = f"{cat:<{cat_w}}"
+    padded_key = f"{key:<{key_w}}"
+
+    c = escape_pango(padded_cat)
+    k = escape_pango(padded_key)
+    d = escape_pango(desc)
+
+    # Cores Oficiais Dracula: Roxo (#bd93f9) | Cinza (#6272a4) | Rosa (#ff79c6) | Branco (#f8f8f2)
+    row = (
+        f"<b><span foreground='#bd93f9'>{c}</span></b> "
+        f"<span foreground='#6272a4'>│</span> "
+        f"<b><span foreground='#ff79c6'>{k}</span></b> "
+        f"<span foreground='#6272a4'>│</span> "
+        f"<span foreground='#f8f8f2'>{d}</span>"
+    )
+    formatted_rows.append(row)
+
   menu_input = "\n".join(formatted_rows)
 
   rofi_cmd = [
       "rofi",
       "-dmenu",
       "-i",
+      "-markup-rows",
       "-p",
       "⌨ Atalhos",
       "-theme-str",
       """
-        window { width: 75%; }
-        listview { lines: 18; columns: 1; }
-        entry { placeholder: "Filtrar por categoria, tecla ou comando..."; }
+        window { 
+            width: 78%; 
+        }
+        listview { 
+            lines: 16; 
+            columns: 1; 
+            spacing: 2px;
+        }
+        element { 
+            padding: 4px 8px; 
+            border-radius: 0px;
+        }
+        entry { 
+            placeholder: "Filtrar por categoria, tecla ou ação..."; 
+        }
       """,
   ]
 
