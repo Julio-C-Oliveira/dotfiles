@@ -46,7 +46,7 @@ super + ctrl + {m, x, y, z}
 # ------------------------------
 # MANUAL SPLIT
 # ------------------------------
-#
+
 # send the newest marked node to the newest preselected node
 super + y
 	bspc node newest.marked.local -n newest.!automatic.local
@@ -99,6 +99,7 @@ super + g
 super + {1-9, 0}
 	bspc desktop -f "$(bspc query -M -m pointed --names 2>/dev/null || bspc query -M -m focused --names):^{1-9,10}"
 
+# Mover janela para workspace
 super + shift + {1-9, 0}
 	bspc node -d "$(bspc query -M -m pointed --names 2>/dev/null || bspc query -M -m focused --names):^{1-9,10}" --follow
 
@@ -110,6 +111,7 @@ super + bracket{left,right}
 super + Tab
 	$HOME/dotfiles/scripts/bspwm_focus_monitor.sh next
 
+# Passar pro próximo monitor
 super + shift + Tab
 	$HOME/dotfiles/scripts/bspwm_focus_monitor.sh prev
 
@@ -146,11 +148,11 @@ super + ctrl + alt + {s, r}
 
 # Lock Screen (Mudo)
 super + alt + q
-    $HOME/.local/bin/lock.sh
+	$HOME/.local/bin/lock.sh
 
 # Lock Screen (Com Áudio)
 super + alt + shift + q
-    $HOME/.local/bin/lock.sh audio
+	$HOME/.local/bin/lock.sh audio
 
 # --------------------------
 # OTHERS
@@ -174,6 +176,6 @@ super + alt + a
 
 # Matar todas as instâncias de aúdios aleatórios
 super + alt + z
-  	pkill mpv
+	pkill mpv
 
 
