@@ -1,0 +1,24 @@
+# --------------------------
+# GIT
+# --------------------------
+
+# Inicializar o reposiório
+    git init -b main
+
+# Criar o repositório remoto no Github com o nome da pasta atual
+    gh repo create --public --source=. --push
+
+# Criar o repositório remoto no Github definindo um nome
+    gh repo create nome_do_repositorio --public --source=. --push
+
+# Desfazer o último commit mantendo as alterações
+    git reset --soft HEAD~1
+
+# Descartar alterações locais em um arquivo (não adicionadas)
+    git restore caminho/do/arquivo
+
+# Tirar arquivo da staging area (desfazer git add)
+    git restore --staged caminho/do/arquivo
+
+# Descartar alterações locais e remover da staging area (reset total)
+    git restore --staged --worktree caminho/do/arquivo

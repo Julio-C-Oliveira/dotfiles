@@ -158,9 +158,14 @@ super + alt + shift + q
 # OTHERS
 # --------------------------
 
-# Exibe a janela de comandos
+# Exibe a janela de atalhos
 super + h
 	$HOME/dotfiles/scripts/windows/bspwm-cheatsheet.py 
+
+# Exibe a janela de lembretes de comandos
+super + shift + h
+	$HOME/dotfiles/scripts/windows/reminder_for_commands.py 
+
 
 # --------------------------
 # OTHERS
