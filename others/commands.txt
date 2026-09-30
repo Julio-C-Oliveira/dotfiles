@@ -41,3 +41,16 @@
 
 # Exemplo multi-monitor: um à esquerda, um à direita e um espelhado
     xrandr --output DP-1 --primary --auto --output HDMI-1 --auto --right-of DP-1 --output eDP-1 --auto --left-of DP-1 --output DP-2 --auto --same-as DP-1
+
+# --------------------------
+# DISTROBOX
+# --------------------------
+
+# Criar um contêiner Ubuntu ou Debian
+    distrobox create --name debian-box --image debian:latest
+
+# Acessar um contêiner
+    distrobox enter debian-box
+
+# Exportar um executavel
+    distrobox-export --app nome-do-executavel
