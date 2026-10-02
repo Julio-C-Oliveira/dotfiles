@@ -1,4 +1,4 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: [FEATURE / MODULE]
 
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 
@@ -8,33 +8,27 @@
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+[Extract from module spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
 <!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
+  ACTION REQUIRED: Replace the content in this section with technical details for the system/dotfiles setup.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+**Target OS / Distro**: [e.g., Arch Linux, Gentoo, Debian, macOS, Fedora or NEEDS CLARIFICATION]
 
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+**Package Managers**: [e.g., pacman/aur, emerge, apt, brew, nix or NEEDS CLARIFICATION]
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+**Symlink / Deployment Manager**: [e.g., GNU Stow, Dotbot, custom install.py/bash script or NEEDS CLARIFICATION]
 
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Shell & Environment**: [e.g., Zsh, Bash, Fish, systemd user services or NEEDS CLARIFICATION]
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Privilege Requirements**: [e.g., User-only (~/.config), Root (/etc, /usr/share), or Mixed]
 
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
+**Script Languages / Tools**: [e.g., Python 3, Bash, POSIX sh, jq or NEEDS CLARIFICATION]
 
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
-
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
-
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Constraints**: [e.g., Must remain idempotent, Must not leak secrets, Must respect .dotfilesignore]
 
 ## Constitution Check
 
@@ -44,64 +38,37 @@
 
 ## Project Structure
 
-### Documentation (this feature)
+### Documentation (this feature/module)
 
 ```text
 specs/[###-feature]/
 ├── plan.md              # This file (__SPECKIT_COMMAND_PLAN__ command output)
 ├── research.md          # Phase 0 output (__SPECKIT_COMMAND_PLAN__ command)
-├── data-model.md        # Phase 1 output (__SPECKIT_COMMAND_PLAN__ command)
-├── quickstart.md        # Phase 1 output (__SPECKIT_COMMAND_PLAN__ command)
-├── contracts/           # Phase 1 output (__SPECKIT_COMMAND_PLAN__ command)
+├── quickstart.md        # Phase 1 output (__SPECKIT_COMMAND_PLAN__ command - dry-run & test instructions)
 └── tasks.md             # Phase 2 output (__SPECKIT_COMMAND_TASKS__ command - NOT created by __SPECKIT_COMMAND_PLAN__)
 ```
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+### Dotfiles Repository Layout (repository root)
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+# Standard Modular Dotfiles Layout (Stow / Custom Installer Compatible)
+[module_name]/            # e.g., kitty/, bspwm/, hypr/, zsh/
+└── .config/              # or target relative path
+    └── [module]/
+        └── [config_files]
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+scripts/                 # Helper installer & maintenance scripts
+├── installation_script/ # Package lists, python/bash install routines
+└── utils/               # Helper utilities
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+templates/               # Spec Kit templates & scaffolds
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+.agent/                  # Spec Kit agent workflows & extension hooks
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+.dotfilesignore          # Ignored system files, caches & secrets
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: [Document the selected structure for this module and reference the real directories captured above]
 
 ## Complexity Tracking
 
@@ -109,5 +76,5 @@ directories captured above]
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| [e.g., Manual root script] | [Privileged hook requirement] | [Why user-space symlinks are insufficient] |
+| [e.g., Custom python wrapper] | [Complex dependency resolving] | [Why plain shell script is insufficient] |

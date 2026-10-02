@@ -138,25 +138,24 @@ Command ends after Phase 1 design. Report branch, IMPL_PLAN path, and generated 
 
 **Prerequisites:** `research.md` complete
 
-1. **Extract entities from feature spec** → `data-model.md`:
-   - Entity name, fields, relationships
-   - Validation rules from requirements
-   - State transitions if applicable
+1. **Extrair esquemas de configuração e estado** → `config-schema.md`:
+   - Variáveis de ambiente utilizadas (ex.: `$XDG_CONFIG_HOME`, `$TERM`, `$EDITOR`)
+   - Formatos de configuração por componente (INI/bash para bspwm, TOML para picom, etc.)
+   - Arquivos de estado local (ex.: caminho de wallpaper persistido, último tema ativo)
+   - Arquivos de override local (`*.local`) e sua convenção de carregamento
 
-2. **Define interface contracts** (if project has external interfaces) → `/contracts/`:
-   - Identify what interfaces the project exposes to users or other systems
-   - Document the contract format appropriate for the project type
-   - Examples: public APIs for libraries, command schemas for CLI tools, endpoints for web services, grammars for parsers, UI contracts for applications
-   - Skip if project is purely internal (build scripts, one-off tools, etc.)
+2. **Definir contratos de IPC e CLI** (se o componente expõe interfaces) → `contracts/`:
+   - **Sinais e IPC**: Chamadas IPC relevantes (`bspc subscribe`, `polybar-msg cmd restart`, `kill -USR1 <pid>`)
+   - **Interfaces CLI de scripts próprios**: Parâmetros aceitos por scripts em `scripts/`
+   - **Mapa de Keybindings sxhkd**: Tabela de atalhos com colunas Tecla → Ação → Script/Binário, verificando conflitos entre WM e terminal
 
-3. **Create quickstart validation guide** → `quickstart.md`:
-   - Document runnable validation scenarios that prove the feature works end-to-end
-   - Include prerequisites, setup commands, test/run commands, and expected outcomes
-   - Use links or references to contracts and data model details instead of duplicating them
-   - Do not include full implementation code, model/service/controller bodies, migrations, or complete test suites
-   - Keep this artifact as a validation/run guide; implementation details belong in `tasks.md` and the implementation phase
+3. **Criar guia de validação de boot** → `boot-validation.md`:
+   - Verificações de sintaxe executáveis sem Xorg ativo: `bash -n bspwmrc`, `picom --diagnostics`, `python -m py_compile utils.py`
+   - Verificações de permissão: `test -x bspwmrc`, `ls -la scripts/*.sh`
+   - Verificação de dependências: `command -v <bin>` para cada binário referenciado
+   - Comandos de rollback seguros caso o teste falhe
 
-**Output**: data-model.md, /contracts/*, quickstart.md
+**Output**: config-schema.md, contracts/* (se houver interfaces), boot-validation.md
 
 ## Key rules
 

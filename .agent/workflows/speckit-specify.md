@@ -154,32 +154,31 @@ Given that feature description, do this:
 
       ## Content Quality
 
-      - [ ] No implementation details (languages, frameworks, APIs)
-      - [ ] Focused on user value and business needs
-      - [ ] Written for non-technical stakeholders
-      - [ ] All mandatory sections completed
+      - [ ] Não contém detalhes de implementação (código-fonte, lógica interna de scripts)
+      - [ ] Focado em comportamento observável do sistema (o que o usuário/administrador vê e faz)
+      - [ ] Todas as seções obrigatórias completadas
+      - [ ] Contexto de hardware mencionado quando relevante (monitor único vs multi-monitor, GPU, etc.)
 
       ## Requirement Completeness
 
-      - [ ] No [NEEDS CLARIFICATION] markers remain
-      - [ ] Requirements are testable and unambiguous
-      - [ ] Success criteria are measurable
-      - [ ] Success criteria are technology-agnostic (no implementation details)
-      - [ ] All acceptance scenarios are defined
-      - [ ] Edge cases are identified
-      - [ ] Scope is clearly bounded
-      - [ ] Dependencies and assumptions identified
+      - [ ] Nenhum marcador [NEEDS CLARIFICATION] permanece
+      - [ ] Requisitos são testáveis via shell (`command -v`, `bash -n`, permissões, etc.)
+      - [ ] Critérios de sucesso são verificáveis sem rodar o instalador completo
+      - [ ] Todos os atalhos de teclado (sxhkd) e fluxos de script estão documentados
+      - [ ] Casos de borda identificados (falha de monitor, GPU ausente, pacote não instalado)
+      - [ ] Dependências de pacotes identificadas (pacman vs AUR)
+      - [ ] Escopo claramente delimitado (Stow vs instalador, usuário vs root)
 
       ## Feature Readiness
 
-      - [ ] All functional requirements have clear acceptance criteria
-      - [ ] User scenarios cover primary flows
-      - [ ] Feature meets measurable outcomes defined in Success Criteria
-      - [ ] No implementation details leak into specification
+      - [ ] Todos os requisitos funcionais têm critérios de aceitação verificáveis
+      - [ ] Fluxos de uso principal cobertos (instalação, uso diário, reexecução)
+      - [ ] Isolamento Root/Stow respeitado (não misturar configurações de usuário com sistema)
+      - [ ] Componentes privilegiados identificados (se houver)
 
       ## Notes
 
-      - Items marked incomplete require spec updates before `__SPECKIT_COMMAND_CLARIFY__` or `__SPECKIT_COMMAND_PLAN__`
+      - Itens incompletos requerem atualização da spec antes de `__SPECKIT_COMMAND_CLARIFY__` ou `__SPECKIT_COMMAND_PLAN__`
       ```
 
    b. **Run Validation Check**: Review the spec against each checklist item:
@@ -279,10 +278,12 @@ Report completion to the user with:
 
 ## Quick Guidelines
 
-- Focus on **WHAT** users need and **WHY**.
-- Avoid HOW to implement (no tech stack, APIs, code structure).
-- Written for business stakeholders, not developers.
-- DO NOT create any checklists that are embedded in the spec. That will be a separate command.
+- Foco em **O QUÊ** o componente/script faz e **POR QUÊ** é necessário.
+- Evitar HOW to implement (sem código-fonte, sem lógica interna de scripts).
+- Escrito para o administrador do sistema, não para stakeholders não-técnicos.
+- Não criar checklists embutidos na spec. Isso é responsabilidade de outro comando.
+- **Casos de Uso de Desktop** substituem "Histórias de Usuário" — descrever em termos de workflow de teclado ou fluxo de script (ex.: "Ao pressionar Super+M, bspwm move janela para o monitor secundário").
+- **Workflows de Teclado/Script** documentar como tabela: Atalho sxhkd → Ação → Script/Binário invocado.
 
 ### Section Requirements
 
@@ -294,49 +295,35 @@ Report completion to the user with:
 
 When creating this spec from a user prompt:
 
-1. **Make informed guesses**: Use context, industry standards, and common patterns to fill gaps
-2. **Document assumptions**: Record reasonable defaults in the Assumptions section
-3. **Limit clarifications**: Maximum 3 [NEEDS CLARIFICATION] markers - use only for critical decisions that:
-   - Significantly impact feature scope or user experience
-   - Have multiple reasonable interpretations with different implications
-   - Lack any reasonable default
-4. **Prioritize clarifications**: scope > security/privacy > user experience > technical details
-5. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
-6. **Common areas needing clarification** (only if no reasonable default exists):
-   - Feature scope and boundaries (include/exclude specific use cases)
-   - User types and permissions (if multiple conflicting interpretations possible)
-   - Security/compliance requirements (when legally/financially significant)
+1. **Inferir defaults razoáveis**: Usar contexto do repositório, estrutura de pastas e padrões de distribuições Linux/Unix para preencher lacunas
+2. **Documentar assunções**: Registrar defaults na seção Assumptions (ex.: "Assume monitor único; suporte a dual-monitor via arquivo .local")
+3. **Limitar clarificações**: Máximo 3 marcadores [NEEDS CLARIFICATION] — usar apenas para decisões críticas:
+   - Impacto no escopo (Stow vs instalador)
+   - Dependência de hardware (GPU, monitor, interface de rede)
+   - Ação privilegiada (sudo requerido vs usuário)
+4. **Priorizar clarificações**: escopo > hardware/sistema > comportamento de falha > estética
+5. **Pensar como testador de sistema**: Todo requisito vago deve falhar no critério "verificável via `command -v` ou `bash -n`"
+6. **Áreas comuns que precisam de clarificação** (apenas se não houver default razoável):
+   - Hardware-specific: comportamento em single vs multi-monitor
+   - Fonte do pacote: pacman / emerge / apt / brew
+   - Escopo de ação: Stow (`$HOME`) vs instalador (`/etc/`, `/usr/share/`)
 
-**Examples of reasonable defaults** (don't ask about these):
+**Exemplos de defaults razoáveis para dotfiles** (não perguntar sobre esses):
 
-- Data retention: Industry-standard practices for the domain
-- Performance targets: Standard web/mobile app expectations unless specified
-- Error handling: User-friendly messages with appropriate fallbacks
-- Authentication method: Standard session-based or OAuth2 for web apps
-- Integration patterns: Use project-appropriate patterns (REST/GraphQL for web services, function calls for libraries, CLI args for tools, etc.)
+- Gerenciamento de symlinks: GNU Stow
+- Configurações privilegiadas: via `sudo` no script de instalação
+- Idempotência: sempre garantida (`--needed`, verificação de existência antes de copiar)
+- Fallback de monitor: arquivo `.local` de override
+- Formato de config: respeitar o formato nativo do programa
 
 ### Success Criteria Guidelines
 
-Success criteria must be:
+Critérios de sucesso para dotfiles devem ser:
 
-1. **Measurable**: Include specific metrics (time, percentage, count, rate)
-2. **Technology-agnostic**: No mention of frameworks, languages, databases, or tools
-3. **User-focused**: Describe outcomes from user/business perspective, not system internals
-4. **Verifiable**: Can be tested/validated without knowing implementation details
-
-**Good examples**:
-
-- "Users can complete checkout in under 3 minutes"
-- "System supports 10,000 concurrent users"
-- "95% of searches return results in under 1 second"
-- "Task completion rate improves by 40%"
-
-**Bad examples** (implementation-focused):
-
-- "API response time is under 200ms" (too technical, use "Users see results instantly")
-- "Database can handle 1000 TPS" (implementation detail, use user-facing metric)
-- "React components render efficiently" (framework-specific)
-- "Redis cache hit rate above 80%" (technology-specific)
+1. **Verificáveis via shell**: Podem ser validados com `command -v`, `bash -n`, `test -x`, etc.
+2. **Orientados a comportamento observável**: O que o usuário vê na tela ou o sistema de arquivos revela
+3. **Idempotentes**: Validados mesmo após múltiplas execuções do instalador
+4. **Sem dependência de estado efemero**: Não requerem Xorg/Wayland ativo ou sessão gráfica para verificação basilar
 
 ## Done When
 

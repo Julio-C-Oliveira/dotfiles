@@ -1,4 +1,4 @@
-# Feature Specification: [FEATURE NAME]
+# Module / Feature Specification: [MODULE OR FEATURE NAME]
 
 **Feature Branch**: `[###-feature-name]`
 
@@ -8,39 +8,35 @@
 
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## System Scenarios & Acceptance Criteria *(mandatory)*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
+  IMPORTANT: Stories/scenarios should be PRIORITIZED by component/module importance.
+  Each scenario must be INDEPENDENTLY TESTABLE / VERIFIABLE - meaning if you deploy just ONE of them,
+  you still have a functional, valid system configuration.
 
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
+  Assign priorities (P1, P2, P3, etc.) to each scenario.
+  Examples of scenarios: "Kitty terminal theme & keybindings", "Bspwm window management rules", "Automated package installation & symlinking".
 -->
 
-### User Story 1 - [Brief Title] (Priority: P1)
+### Scenario 1 - [Brief Title] (Priority: P1)
 
-[Describe this user journey in plain language]
+[Describe this system setup journey in plain language, e.g., "Configure Kitty terminal with custom font, theme, and keybindings linked via Stow"]
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**Independent Test**: [Describe how this can be tested independently - e.g., "Run stow kitty and launch kitty; verify font and colors load without errors"]
 
 **Acceptance Scenarios**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [clean environment or existing config], **When** [applying dotfile/stow/script], **Then** [expected outcome, e.g., config symlinked to ~/.config/kitty/kitty.conf]
+2. **Given** [missing dependency package], **When** [running install script], **Then** [package is installed via package manager]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### Scenario 2 - [Brief Title] (Priority: P2)
 
-[Describe this user journey in plain language]
+[Describe this system setup journey in plain language]
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
@@ -52,9 +48,9 @@
 
 ---
 
-### User Story 3 - [Brief Title] (Priority: P3)
+### Scenario 3 - [Brief Title] (Priority: P3)
 
-[Describe this user journey in plain language]
+[Describe this system setup journey in plain language]
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
@@ -66,66 +62,40 @@
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+### Edge Cases & System Constraints
 
-### Edge Cases
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
-
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+- What happens when [package is missing or unavailable in distro repositories]?
+- How does system handle [existing configuration files in target directory without overwriting blindly]?
+- What happens when [running without root/sudo privileges]?
 
 ## Requirements *(mandatory)*
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
-
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST [specific capability, e.g., "provide modular Stow-compatible configuration for [module]"]
+- **FR-002**: Installation script MUST [specific capability, e.g., "register required package [package_name] in packages definition"]
+- **FR-003**: System MUST [environment requirement, e.g., "set $ENV_VAR in shell init scripts"]
+- **FR-004**: System MUST NOT [security boundary, e.g., "hardcode private tokens or machine-specific static paths"]
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-005**: System MUST configure display manager via [NEEDS CLARIFICATION: SDDM, LightDM, or GDM?]
 
-### Key Entities *(include if feature involves data)*
+### Key System Entities & Config Paths
 
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
+- **[Config Module 1]**: [Path in repo, target path in system, e.g., `kitty/` -> `~/.config/kitty/`]
+- **[Package / Service]**: [Required package name, systemd unit, or helper script]
 
 ## Success Criteria *(mandatory)*
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: [Measurable outcome, e.g., "Executing installer script deploys module cleanly with 0 errors"]
+- **SC-002**: [Measurable outcome, e.g., "GNU Stow dry-run produces no conflicts or broken links"]
+- **SC-003**: [Verification metric, e.g., "System/application boots successfully using new configuration"]
 
 ## Assumptions
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
--->
-
-- [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
-- [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [Assumption about target OS/Distro, e.g., "Target OS is Arch Linux or Linux kernel 6.x+"]
+- [Assumption about privilege level, e.g., "User has sudo access for package installation"]
+- [Dependency on tools, e.g., "GNU Stow and Python 3 are installed on host system"]

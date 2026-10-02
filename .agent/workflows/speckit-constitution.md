@@ -103,6 +103,17 @@ Follow this execution flow:
      - PATCH: Clarifications, wording, typo fixes, non-semantic refinements.
    - If version bump type ambiguous, propose reasoning before finalizing.
 
+   **Contexto Dotfiles (Sistemas Linux/Unix)**: Se o repositório contiver módulos de dotfiles ou scripts de instalação (`installation_script/`, `install.sh`, `packages.json`), os seguintes **6 princípios são OBRIGATÓRIOS** e devem estar presentes na constituição gerada, mesmo que o template não os contenha explicitamente:
+
+   | # | Nome do Princípio | Regra Não-Negociável |
+   |---|---|---|
+   | I | **Espelhamento Obrigatório** | Nenhuma configuração de aplicação pode ser adicionada ao repositório sem que o respectivo pacote base seja adicionado à lista de pacotes e suportado pelo script de instalação. |
+   | II | **Instalador Completo** | Toda configuração privilegiada (`/etc/`, `/usr/share/`, hooks de sistema) DEVE ter rotina explícita nos scripts de instalação. Não é suficiente a pasta existir no repositório. |
+   | III | **Isolamento Root/Stow** | Configurações de usuário são geridas EXCLUSIVAMENTE pelo GNU Stow / Symlinks de usuário. Configurações que requerem privilégios elevados pertencem EXCLUSIVAMENTE ao script de instalação com tratamento explícito de elevação via `sudo`. NUNCA misturar. |
+   | IV | **Idempotência** | Todo script e toda função do instalador DEVE ser seguro para reexecução contínua: uso de `--needed` em pacotes, verificação de existência antes de copiar, `shutil.which()` antes de instalar. |
+   | V | **Proibição de Segredos** | É PROIBIDO versionar chaves SSH, tokens de API, credenciais de serviços externos ou qualquer informação sensível. Qualquer violação é gravidade CRÍTICA. |
+   | VI | **Higiene de Artefatos** | O `.gitignore` e `.dotfilesignore` DEVEM cobrir caches (`__pycache__/`), logs (`install.log`) e temporários antes de qualquer commit. Arquivos binários e compactados (`.7z`) devem ser avaliados para migração ou download externo via script. |
+
 3. Draft the updated constitution content using the resolved template as the required structure:
    - Replace every placeholder with concrete text (no bracketed tokens left except intentionally retained template slots that the project has chosen not to define yet—explicitly justify any left).
    - Preserve heading hierarchy and comments can be removed once replaced unless they still add clarifying guidance.
@@ -121,6 +132,7 @@ Follow this execution flow:
    - Version line matches report.
    - Dates ISO format YYYY-MM-DD.
    - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
+   - **Para dotfiles**: verificar que os 6 princípios obrigatórios (Princípios I–VI acima) estão presentes e com linguagem MUST. Se algum estiver ausente, adicioná-lo antes de finalizar.
 
 6. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
 
@@ -131,7 +143,6 @@ Follow this execution flow:
    - A `Next Actions` section for any deferred non-governance intents.
 
 Formatting & Style Requirements:
-
 - Use Markdown headings exactly as in the template (do not demote/promote levels).
 - Wrap long rationale lines to keep readability (<100 chars ideally) but do not hard enforce with awkward breaks.
 - Keep a single blank line between sections.
