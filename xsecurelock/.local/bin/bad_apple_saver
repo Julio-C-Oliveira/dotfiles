@@ -1,0 +1,11 @@
+#!/bin/sh
+exec mpv \
+  --wid="$XSCREENSAVER_WINDOW" \
+  --loop-file=inf \
+  ${AUDIO_OPTS:---mute=yes} \
+  --no-terminal \
+  --no-osc \
+  --no-osd-bar \
+  --hwdec=no \
+  --vo=gpu,x11 \
+  "$HOME/downloads/bad_apple_pv.mkv"

@@ -19,7 +19,7 @@
             "ufw"
         ],
         "window_manager_and_related" : [
-            "bspwm", "sxhkd", 
+            "bspwm", "sxhkd", "xsecurelock",
             "picom", "polybar", "rofi"
         ],
         "system_and_integrations" : [
@@ -53,7 +53,7 @@
     },
     "yay_packages" : {
         "tools" : [
-            "betterlockscreen", "webapp-manager", "caffeine-ng"
+            "webapp-manager", "caffeine-ng"
         ],
         "gaming" : [
             "protonup-qt", "game-devices-udev"
@@ -84,7 +84,8 @@
         {"name" : "bash", "target" : [".bashrc", ".bash_profile"]},
         {"name" : "yazi", "target" : [".config/yazi"]},
         {"name" : "theme", "target" : [".config/gtk-3.0", ".config/qt5ct", ".config/qt6ct", ".config/QtProject.conf"]},
-        {"name" : "dirs", "target" : [".config/user-dirs.dirs", ".config/user-dirs.locale"]}
+        {"name" : "dirs", "target" : [".config/user-dirs.dirs", ".config/user-dirs.locale"]},
+        {"name" : "xsecurelock", "target" : [".local/bin/lock.sh", ".local/bin/bad_apple_saver"]}
     ],
     "packages_to_setup" : [
         {
@@ -93,12 +94,6 @@
                 "sudo ufw default deny incoming",
                 "sudo ufw default allow outgoing",
                 "sudo ufw --force enable"
-            ]
-        },
-        {
-            "package": "betterlockscreen",
-            "commands" : [
-                "betterlockscreen -u ~/dotfiles/wallpapers/Kobayashi.jpg"
             ]
         },
         {
