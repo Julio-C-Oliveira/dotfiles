@@ -47,7 +47,7 @@ The following modules/paths are ignored by repository tools and agent scanners:
 | **`theme`** | GTK / Qt Appearance | `theme/.config/gtk-3.0/`, `qt5ct/`, `qt6ct/` | `~/.config/{gtk-3.0,qt5ct,qt6ct}` | `theme` |
 | **`xorg`** | X Server Setup | `xorg/.xinitrc` | `~/.xinitrc` | `xorg` (startx path) |
 | **`yazi`** | Terminal File Manager | `yazi/.config/yazi/yazi.toml`, `keymap.toml` | `~/.config/yazi/` | `yazi` |
-| **`plymouth`** | Boot Splash Theme | `plymouth/umamusume/` | `/usr/share/plymouth/themes/` | Manual / Unhandled |
+| **`plymouth`** | Boot Splash Theme | `plymouth/umamusume/` | `/usr/share/plymouth/themes/` | `setup_plymouth()` |
 | **`wallpapers`** | Desktop Wallpapers | `wallpapers/` (unpacked from `wallpapers.7z`) | `~/dotfiles/wallpapers/` | Asset Extraction |
 | **`scripts`** | Helper & Setup Scripts | `scripts/installation_script/main.py`, `utils.py` | `~/dotfiles/scripts/` | Execution Scripts |
 
@@ -70,7 +70,7 @@ The following modules/paths are ignored by repository tools and agent scanners:
 | **`theme`** | `gnome-themes-extra`, `qt5ct`, `qt6ct` | `apply_stow()`, `gsettings dark mode` | 🟢 Automated |
 | **`xorg`** | `xorg-server`, `xorg-xinit`, `xorg-xrandr`, `xf86-input-libinput` | `setup_startx()` | 🟡 Interactive (`choice 1`) |
 | **`yazi`** | `yazi` | `apply_stow()`, `setup_packages()` (`ya pkg install`) | 🟢 Automated |
-| **`plymouth`**| Unregistered | None | 🔴 Unhandled |
+| **`plymouth`**| `plymouth` | `setup_plymouth()` | 🟢 Automated |
 | **`wallpapers`**| `p7zip` | `unpack_wallpapers()` | 🟢 Automated |
 
 ---

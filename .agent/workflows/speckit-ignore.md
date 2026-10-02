@@ -32,13 +32,14 @@ Follow this execution flow:
    - If neither exists, copy `templates/ignore-template.md` to `.dotfilesignore` as the default ignore file.
 
 2. **Process User Request**:
-   - **Add Rules**: If `$ARGUMENTS` contains new paths or glob patterns (e.g., `add sddm_theme.7z` or `ignore *.bak`), append them under the appropriate section in `.dotfilesignore` without creating duplicate entries.
-   - **Check Path**: If `$ARGUMENTS` asks to check a specific path (e.g., `check wallpapers.7z`), evaluate whether git wildmatch / fnmatch rules in `.dotfilesignore` match that path and report the result.
-   - **View Rules**: If `$ARGUMENTS` is empty or asks to list/view, output the current formatted contents of `.dotfilesignore`.
+   - **Add Rules**: If `$ARGUMENTS` contains new paths or glob patterns, append them to `.dotfilesignore`.
+   - **Check Path**: Evaluate path against `.dotfilesignore` rules.
+   - **View Rules**: Output current contents of `.dotfilesignore`.
 
 3. **Validate Exclusions**:
-   - Confirm that sensitive credential patterns (`id_rsa`, `*.pem`, `*.key`, `.ssh/`, `.gnupg/`) remain protected.
+   - Confirm sensitive patterns (`id_rsa`, `*.pem`, `*.key`, `.ssh/`, `.gnupg/`) remain protected.
 
-4. **Save & Summarize**:
+4. **Completion Report & Commit Suggestion**:
    - Save changes to `.dotfilesignore`.
-   - Provide a concise summary of active ignore rules or modifications made.
+   - Provide summary of active ignore rules or modifications made.
+   - **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `chore(ignore): update .dotfilesignore rules`).

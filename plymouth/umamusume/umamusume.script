@@ -1,46 +1,31 @@
-// Função para carregar frames de uma pasta, dentro de um intervalo específico
-função carregar_frames_intervalo(diretorio, inicio, fim) {
-    lista = [];
-    para i = inicio; i <= fim; i++ {
-        nome = diretorio + "/frame_" + sprintf("%03d", i) + ".jpg";
-        img = Image(nome);
-        se (!img) break;
-        lista += [img];
-    }
-    return lista;
+total_frames = 74;
+
+# Plymouth exige while
+i = 0;
+while (i < total_frames) {
+    images[i] = Image("frame_" + i + ".png");
+    i = i + 1;
 }
 
-// Carrega os frames iniciais e de loop
-frames_inicial = carregar_frames_intervalo("/usr/share/plymouth/themes/umamusume/frames", 1, 30);  // 30 frames
-frames_loop    = carregar_frames_intervalo("/usr/share/plymouth/themes/umamusume/frames", 31, 166); // 136 frames
+sprite = Sprite();
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
 
-start_time = Time();
-fps = 30;
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
 
-função draw() {
-    t = Time() - start_time;
-    img = null;
+progress = 0;
 
-    // Parte inicial
-    if (t < Length(frames_inicial) / fps) {
-        img_idx = Floor(t * fps);
-        if (img_idx >= Length(frames_inicial)) img_idx = Length(frames_inicial) - 1;
-        img = frames_inicial[img_idx];
-    } else {
-        // Loop: garante que todos os frames do loop sejam exibidos pelo menos uma vez
-        loop_time = t - (Length(frames_inicial) / fps);
-        total_loop_duration = Length(frames_loop) / fps;
-
-        progress = loop_time / total_loop_duration;
-        if (progress > 1.0) progress = 1.0;  // não passa do último frame
-        img_idx = Floor(progress * Length(frames_loop));
-        if (img_idx >= Length(frames_loop)) img_idx = Length(frames_loop) - 1;
-
-        img = frames_loop[img_idx];
-    }
-
-    if (img) {
-        DrawImage(img, 0, 0, ScreenWidth, ScreenHeight);
-    }
+fun refresh_callback() {
+    frame_idx = Math.Int(progress) % total_frames;
+    img = images[frame_idx];
+    
+    sprite.SetImage(img);
+    sprite.SetX(screen_width / 2 - img.GetWidth() / 2);
+    sprite.SetY(screen_height / 2 - img.GetHeight() / 2);
+    
+    # 0.2 (~12 fps), 0.25 (~15 fps), 0.4 (~24 fps)
+    progress = progress + 0.4;
 }
 
+Plymouth.SetRefreshFunction(refresh_callback);

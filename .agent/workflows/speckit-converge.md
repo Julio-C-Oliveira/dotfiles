@@ -1,5 +1,9 @@
 ---
 description: Assess the current codebase against the feature's spec, plan, and tasks, then append any remaining unbuilt work as new tasks to tasks.md so implement can complete it.
+handoffs:
+  - label: Implement Convergence Tasks
+    agent: speckit.implement
+    prompt: Start implementation of convergence tasks defined in tasks.md
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks
   ps: scripts/powershell/check-prerequisites.ps1 -Json -RequireSpec -RequireTasks -IncludeTasks
@@ -14,17 +18,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Pre-Execution Checks
+## Scope Guard & Plan-First Gate
 
-**Check for extension hooks (before convergence)**:
-- Check if `.specify/extensions.yml` exists in the project root.
-- Filter out hooks where `enabled` is explicitly `false`.
+This command evaluates the current codebase against `spec.md`, `plan.md`, and `tasks.md` and appends missing work as tasks.
+
+- **Mandatory Plan Approval**: If convergence findings require major architectural adjustments (e.g., refactoring installer scripts or restructuring dotfile directories), present a Convergence Plan for user approval before appending complex tasks.
 
 ## Goal
 
-Close the gap between what a feature's specification, plan, and tasks call for and what the repository currently implements. Read `spec.md`, `plan.md`, and `tasks.md` as the **sole source of intent** (with the constitution as governing constraints), assess the current state of the repo, and **append remaining work as new tasks** at the bottom of `tasks.md` so that `__SPECKIT_COMMAND_IMPLEMENT__` can complete it.
+Close the gap between specified intent and current implementation by appending remaining work to `tasks.md`.
 
-**Modo Dotfiles**: Se scripts de instalação (`scripts/installation_script/packages.json`) existirem na raiz do repositório, este comando executa a **Fase 0: Convergência de Componentes Privilegiados** para verificar se todas as pastas de dotfiles têm suporte correspondente nos scripts de instalação.
+**Modo Dotfiles**: Se `scripts/installation_script/packages.json` existir na raiz do repositório, este comando executa a **Fase 0: Convergência de Componentes Privilegiados** para detectar configs no repo (Plymouth, SDDM, Xorg, etc.) sem rotina no instalador.
 
 ## Operating Constraints
 
@@ -46,8 +50,6 @@ Close the gap between what a feature's specification, plan, and tasks call for a
 - Se houver trabalho pendente, acrescentar `## Phase N: Convergence` ao final de `tasks.md`.
 - Se tudo estiver 100% implementado, manter `tasks.md` inalterado e reportar status de convergência.
 
-## Done When
+## Handoff
 
-- [ ] Repository assessed against spec, plan, and tasks
-- [ ] Any remaining unbuilt work appended to tasks.md as a new Phase N: Convergence
-- [ ] Completion reported to user
+Report results and hand off to `__SPECKIT_COMMAND_IMPLEMENT__` to complete the appended convergence tasks.

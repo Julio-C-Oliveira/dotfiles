@@ -14,8 +14,14 @@ def main():
         logger=logger
     )
 
+    repo_root = utils.get_repo_root(
+        custom_path=parse_args.repo_dir
+    )
+    logger.info(f"Raiz do repositório detectada: {repo_root}")
+
     configs = utils.load_json(
         parse_args=parse_args,
+        repo_root=repo_root,
         logger=logger
     )
 
@@ -58,7 +64,7 @@ def main():
     )
 
     utils.unpack_wallpapers(
-        zip_path="dotfiles",
+        repo_root=repo_root,
         zip_name="wallpapers.7z",
         output_path="./wallpapers",
         logger=logger
@@ -70,16 +76,20 @@ def main():
 
     utils.apply_stow(
         packages=configs["stow_packages"],
-        stow_path="dotfiles",
+        repo_root=repo_root,
         logger=logger
     )
 
     utils.setup_gui(
-        logger=logger
+        logger=logger,
+        gui_choice=parse_args.gui,
+        non_interactive=parse_args.non_interactive,
+        repo_root=repo_root
     )
 
     utils.setup_packages(
         packages=configs["packages_to_setup"],
+        repo_root=repo_root,
         logger=logger
     )
 
@@ -89,19 +99,33 @@ def main():
         shell=True
     )
 
+    utils.setup_plymouth(
+        repo_root=repo_root,
+        logger=logger
+    )
+
     utils.update_grub(
         logger=logger
     )
 
-    logger.info("Instalação finalizada")
+    logger.info("Instalação finalizada com sucesso!")
     
-    confirmar = input(f"\n{utils.Cores.YELLOW}Deseja reiniciar o sistema agora? (s/n): {utils.Cores.RESET}")
-    if confirmar.lower() == 's':
+    do_reboot = False
+    if parse_args.reboot:
+        do_reboot = True
+    elif parse_args.no_reboot or parse_args.non_interactive:
+        do_reboot = False
+    else:
+        confirmar = input(f"\n{utils.Cores.YELLOW}Deseja reiniciar o sistema agora? (s/n): {utils.Cores.RESET}")
+        if confirmar.strip().lower() == 's':
+            do_reboot = True
+
+    if do_reboot:
+        logger.info("Reiniciando o sistema...")
         utils.run(
             command="sudo reboot", 
             logger=logger
         )
 
-    
 if __name__ == "__main__":
     main()

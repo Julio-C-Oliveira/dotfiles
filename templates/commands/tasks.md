@@ -130,11 +130,12 @@ Check if `.specify/extensions.yml` exists in the project root.
 
 Output path to generated tasks.md and summary:
 - Total task count
-- Task count per user story
+- Task count per scenario/module
 - Parallel opportunities identified
-- Independent test criteria for each story
-- Suggested MVP scope (typically just User Story 1)
-- Format validation: Confirm ALL tasks follow the checklist format (checkbox, ID, labels, file paths)
+- Independent test criteria for each scenario
+- Suggested MVP scope
+- Format validation: Confirm ALL tasks follow checklist format
+- **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `docs(tasks): generate implementation task list for [feature-name]`)
 
 Context for task generation: {ARGS}
 

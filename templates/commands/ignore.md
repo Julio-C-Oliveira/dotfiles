@@ -39,6 +39,7 @@ Follow this execution flow:
 3. **Validate Exclusions**:
    - Confirm that sensitive credential patterns (`id_rsa`, `*.pem`, `*.key`, `.ssh/`, `.gnupg/`) remain protected.
 
-4. **Save & Summarize**:
+4. **Completion Report & Commit Suggestion**:
    - Save changes to `.dotfilesignore`.
    - Provide a concise summary of active ignore rules or modifications made.
+   - **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `chore(ignore): update .dotfilesignore rules`).

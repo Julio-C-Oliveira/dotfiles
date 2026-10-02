@@ -107,7 +107,8 @@ Check if `.specify/extensions.yml` exists in the project root.
 
 ## Completion Report
 
-Command ends after Phase 1 design. Report branch, IMPL_PLAN path, and generated artifacts.
+Command ends after Phase 1 design. Report branch, IMPL_PLAN path, generated artifacts, and provide:
+- **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `docs(plan): add technical implementation plan for [feature-name]`).
 
 ## Phases
 

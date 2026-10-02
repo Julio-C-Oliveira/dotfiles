@@ -61,9 +61,29 @@ O fluxo combina a especificação orientada a componentes com auditoria de pacot
 
 ---
 
+## 🔒 Portões de Planejamento & Geração de Tarefas
+
+### 1. Plano Prévio Obrigatório (Plan-First Gate)
+Para prevenir modificações destrutivas ou não autorizadas no sistema, os seguintes comandos exigem a **apresentação e aprovação de um plano** antes de executar alterações em arquivos ou configurações:
+- **`/speckit-constitution`**: Requer aprovação do plano de emenda antes de atualizar a governança.
+- **`/speckit-detect-drift`**: Requer aprovação do plano de importação/sincronização antes de copiar arquivos do sistema para o repositório.
+- **`/speckit-audit-install`**: Requer aprovação do plano de remediação antes de alterar scripts de instalação (`main.py`, `utils.py`, `packages.json`).
+- **`/speckit-implement`**: Requer a existência de um `plan.md` aprovado antes de alterar código ou configurações.
+- **`/speckit-converge`**: Requer aprovação prévia se a resolução de gaps exigir alterações arquiteturais profundas.
+
+### 2. Capaz de Gerar/Anexar Tarefas ao `tasks.md`
+Além do fluxo derivado de `/speckit-specify` → `/speckit-tasks`, os seguintes comandos estão autorizados a **gerar ou anexar tarefas diretamente ao `tasks.md`**:
+- **`/speckit-audit-install`**: Anexa tarefas para criar funções em `utils.py`, registrar pacotes em `packages.json` ou ajustar chamadas em `main.py`.
+- **`/speckit-detect-drift`**: Anexa tarefas de importação de pastas em `~/.config` ou sincronização de arquivos modificados.
+- **`/speckit-constitution`**: Anexa tarefas de adequação do repositório a novos princípios ratificados.
+- **`/speckit-analyze`**: Anexa tarefas de remediação ao identificar incongruências críticas (`INS-*`).
+- **`/speckit-converge`**: Anexa tarefas na fase `## Phase N: Convergence` para fechar lacunas identificadas entre a spec e o código.
+
+---
+
 ## 🔍 Comandos Específicos para Dotfiles & Manutenção
 
-Além do fluxo principal, o repositório conta com comandos utilitários dedicados à mapeamento, auditoria e sincronização do sistema Linux:
+Além do fluxo principal, o repositório conta com comandos utilitários dedicados ao mapeamento, auditoria e sincronização do sistema Linux:
 
 | Comando | Descrição & Uso |
 | :--- | :--- |
@@ -81,3 +101,49 @@ O arquivo [.dotfilesignore](file:///home/julio/dotfiles/.dotfilesignore) garante
 - **Logs e Caches**: `install.log`, `__pycache__/`, `*.pyc`, diretórios `.cache/`.
 - **Dumps Binários**: Compactados grandes (`.7z`, `.iso`, `.tar.gz`) que não devem ir ao Git sem LFS.
 - **Estado Temporário**: `.swp`, `Thumbs.db`, `.DS_Store`.
+
+---
+
+## 🚀 Guia de Uso do Script de Instalação (`main.py`)
+
+O script de pós-instalação automatiza a configuração do Arch Linux, pacotes AUR/pacman, aplicação de symlinks via GNU Stow e temas visuais.
+
+### Localização do Script
+```bash
+python3 scripts/installation_script/main.py [opções]
+```
+
+### ⚙️ Opções de Linha de Comando (CLI)
+
+| Flag | Descrição | Valor Padrão |
+| :--- | :--- | :--- |
+| `-c`, `--config` | Caminho do arquivo JSON com a definição de pacotes. | `packages.json` |
+| `-g`, `--gui {sddm,startx}` | Define a interface gráfica/display manager a ser instalada. | Interativo / `sddm` em modo autônomo |
+| `-y`, `--yes`, `--non-interactive` | Executa o script de forma 100% não-interativa (sem perguntas manuais). | `False` |
+| `--reboot` | Força a reinicialização do sistema ao final da instalação. | `False` |
+| `--no-reboot` | Impede a reinicialização automática do sistema ao final. | `False` |
+| `--repo-dir` | Caminho do repositório de dotfiles. | Detectado automaticamente |
+
+### 💡 Exemplos de Uso
+
+1. **Modo Interativo Padrão**:
+   ```bash
+   python3 scripts/installation_script/main.py
+   ```
+   *Solicitará ao usuário a escolha da GUI (SDDM / startx) e confirmação para reiniciar o sistema.*
+
+2. **Instalação Não-Interativa / Automação Unattended**:
+   ```bash
+   python3 scripts/installation_script/main.py --non-interactive --gui sddm --no-reboot
+   ```
+   *Executa sem nenhuma interrupção manual, configura SDDM e finaliza sem reiniciar.*
+
+3. **Especificando Caminho de Repositório Customizado**:
+   ```bash
+   python3 scripts/installation_script/main.py --repo-dir /caminho/para/dotfiles -y
+   ```
+
+### 🛡️ Backup Automático de Conflitos
+Ao aplicar os links do GNU Stow, caso existam arquivos ou pastas locais pré-existentes no sistema (ex: `~/.config/bspwm`), o script **cria automaticamente um backup prévio** em:
+`~/.dotfiles_backup/YYYYMMDD_HHMMSS/`
+evitando qualquer perda acidental de dados.

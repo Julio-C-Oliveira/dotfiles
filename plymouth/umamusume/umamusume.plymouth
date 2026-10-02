@@ -1,12 +1,8 @@
 [Plymouth Theme]
-Name=UmaMusumeTheme
-Description=Animação de garotas cavalo para o boot
+Name=Umamusume Theme
+Description=Animacao de Umamusume
 ModuleName=script
 
 [script]
-# Diretório das imagens (relativo à pasta do tema)
-ImageDir=/usr/share/plymouth/themes/umamusume/frames
-
-# Caminho para o script da animação
+ImageDir=/usr/share/plymouth/themes/umamusume
 ScriptFile=/usr/share/plymouth/themes/umamusume/umamusume.script
-

@@ -32,20 +32,16 @@ Follow this execution flow:
    - Identify module purpose (e.g. `kitty` → Terminal, `bspwm` → Window Manager, `sxhkd` → Hotkey Daemon, `polybar` → Status Bar, `yazi` → File Manager, `plymouth` → Boot Splash, `sddm` → Display Manager).
 
 2. **Index Configuration Entrypoints**:
-   - Locate main configuration files within each module (e.g., `kitty/.config/kitty/kitty.conf`, `bspwm/.config/bspwm/bspwmrc`, `sxhkd/.config/sxhkd/sxhkdrc`).
-   - Record target installation locations (`$HOME/.config/...`, `/etc/...`, `/usr/share/...`).
+   - Locate main configuration files within each module.
+   - Record target installation locations.
 
 3. **Map Packages and Installer Routines**:
-   - Cross-reference each module with `scripts/installation_script/packages.json` to list required packages (pacman / AUR / distro native).
-   - Cross-reference each module with `scripts/installation_script/utils.py` and `main.py` to index the python setup functions (e.g., `setup_plymouth()`, `setup_sddm()`).
+   - Cross-reference each module with `packages.json`, `utils.py`, `main.py`.
 
 4. **Generate `.specify/memory/project-map.md`**:
-   - Create directory `.specify/memory` if it does not exist.
-   - Format the project map with clear sections:
-     - 📌 **Repository Overview & Architecture**
-     - 📁 **Module & Configuration Index** (Module → Entrypoint → Target System Path)
-     - 📦 **Package & Installer Function Map** (Module → Base Package → Setup Routine in `utils.py`)
-     - 🔑 **Keybinding & Hook Index** (Hotkeys in `sxhkdrc`, systemd units, Xorg configs)
-     - 🛡️ **Privilege & Deployment Boundaries** (User Stow modules vs. Root Sudo modules)
+   - Create directory `.specify/memory` if missing.
+   - Format module index, package map, keybinding index, privilege boundaries.
 
-5. Save the file to `.specify/memory/project-map.md` and display a summary of indexed modules to the user.
+5. **Completion Report & Commit Suggestion**:
+   - Save `.specify/memory/project-map.md` and summary.
+   - **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `docs(map): update project architecture map (.specify/memory/project-map.md)`).

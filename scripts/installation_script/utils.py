@@ -138,6 +138,28 @@ def install_ucode(logger):
     except Exception as e:
         logger.error(f"Erro ao ler cpuinfo: {e}")
 
+def get_repo_root(custom_path=None):
+    if custom_path:
+        return Path(custom_path).resolve()
+    # utils.py is located at scripts/installation_script/utils.py
+    return Path(__file__).resolve().parent.parent.parent
+
+def backup_conflict(target_path, backup_dir, logger):
+    if target_path.is_symlink():
+        logger.debug(f"Removendo link simbólico existente: {target_path}")
+        target_path.unlink()
+    elif target_path.exists():
+        home = Path.home()
+        try:
+            rel_target = target_path.relative_to(home)
+        except ValueError:
+            rel_target = target_path.name
+        
+        dest = backup_dir / rel_target
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Criando backup de conflito: {target_path} -> {dest}")
+        shutil.move(str(target_path), str(dest))
+
 def install_yay(logger):
     logger.info("Verificando se o yay já está instalado")
 
@@ -152,6 +174,9 @@ def install_yay(logger):
     )
 
     logger.info("Instalando o yay")
+
+    if os.path.exists("/tmp/yay"):
+        shutil.rmtree("/tmp/yay")
 
     run(
         command="git clone https://aur.archlinux.org/yay.git /tmp/yay",
@@ -181,12 +206,15 @@ def enable_user_services(packages, logger):
         logger=logger
     )
 
-def apply_stow(packages, stow_path, logger):
+def apply_stow(packages, repo_root, logger):
     logger.info("Iniciando a aplicação do stow")
 
     home = Path.home()
-    path = (home / stow_path).resolve()
-    os.chdir(path)
+    repo_path = Path(repo_root).resolve()
+    os.chdir(repo_path)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_dir = home / ".dotfiles_backup" / timestamp
 
     for pkg_data in packages:
         pkg = pkg_data["name"]
@@ -196,15 +224,11 @@ def apply_stow(packages, stow_path, logger):
             target_path = home / target
             
             if target_path.exists() or target_path.is_symlink():
-                logger.debug(f"Limpando conflito em: {target_path}")
-                
+                logger.debug(f"Tratando conflito em: {target_path}")
                 try:
-                    if target_path.is_dir() and not target_path.is_symlink():
-                        shutil.rmtree(target_path)
-                    else:
-                        target_path.unlink()
+                    backup_conflict(target_path, backup_dir, logger)
                 except Exception as e:
-                    logger.error(f"Erro ao remover {target_path}: {e}")
+                    logger.error(f"Erro ao tratar conflito em {target_path}: {e}")
 
         run(
             command=f"stow {pkg}",
@@ -213,29 +237,32 @@ def apply_stow(packages, stow_path, logger):
 
     os.chdir(home)
 
-def apply_sddm_stow(stow_path, logger):
-    logger.info("Configurando o sddm")
+def apply_sddm_stow(repo_root, logger):
+    logger.info("Configurando o sddm via Stow")
 
     home = Path.home()
-    path = (home / stow_path).resolve()
-    os.chdir(path)
+    repo_path = Path(repo_root).resolve()
+    os.chdir(repo_path)
 
     run(
         command="sudo stow -t / sddm",
         logger=logger
     )
+
+    wallpaper_path = repo_path / "wallpapers" / "Moon_Rukia.jpg"
     run(
-        command="sudo cp wallpapers/Moon_Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
+        command=f"sudo cp {wallpaper_path} /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
         logger=logger
     )
 
     os.chdir(home)
 
-def setup_packages(packages, logger):
-    logger.info("Inciando a configuração dos pacotes")
+def setup_packages(packages, repo_root, logger):
+    logger.info("Iniciando a configuração dos pacotes")
 
     home = Path.home()
     os.chdir(home)
+    repo_path = Path(repo_root).resolve()
 
     for pkg_data in packages:
         pkg_name = pkg_data["package"]
@@ -244,8 +271,9 @@ def setup_packages(packages, logger):
         logger.info(f"Configurando o pacote: {pkg_name}")
 
         for command in commands:
+            cmd = command.replace("~/dotfiles", str(repo_path))
             run(
-                command=command,
+                command=cmd,
                 logger=logger   
             )
 
@@ -261,31 +289,32 @@ def update_grub(logger):
     else:
         logger.warning("GRUB não encontrado em /boot. Atualize manualmente.")
 
-def unpack_wallpapers(zip_path, zip_name, output_path, logger):
+def unpack_wallpapers(repo_root, zip_name, output_path, logger):
     logger.info("Descomprimindo o zip com os wallpapers.")
 
     home = Path.home()
-    path = (home / zip_path).resolve()
-    file_path = (path / zip_name).resolve()
-    os.chdir(path)
+    repo_path = Path(repo_root).resolve()
+    file_path = repo_path / zip_name
+    os.chdir(repo_path)
 
+    out_full = (repo_path / output_path).resolve()
     run(
-        command=f"7z x {file_path} -o{output_path}",
+        command=f"7z x {file_path} -o{out_full} -y",
         logger=logger
     )
 
     os.chdir(home)
 
-def unpack_sddm_theme(zip_path, zip_name, logger):
+def unpack_sddm_theme(repo_root, zip_name, logger):
     logger.info("Descomprimindo o zip com o tema do sddm.")
 
     home = Path.home()
-    path = (home / zip_path).resolve()
-    file_path = (path / zip_name).resolve()
-    os.chdir(path)
+    repo_path = Path(repo_root).resolve()
+    file_path = repo_path / zip_name
+    os.chdir(repo_path)
 
     run(
-        command=f"7z x {file_path}",
+        command=f"7z x {file_path} -y",
         logger=logger
     )
 
@@ -295,16 +324,42 @@ def unpack_sddm_theme(zip_path, zip_name, logger):
         shell=True
     )
 
+    wallpaper_path = repo_path / "wallpapers" / "Moon_Rukia.jpg"
     run(
-        command=f"sudo cp wallpapers/Moon_Rukia.jpg /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
+        command=f"sudo cp {wallpaper_path} /usr/share/sddm/themes/sugar-candy/Backgrounds/Mountain.jpg",
         logger=logger
     )
 
     os.chdir(home)
 
 
+def setup_plymouth(repo_root, logger):
+    logger.info("Configurando o tema Plymouth umamusume...")
+
+    repo_path = Path(repo_root).resolve()
+    plymouth_src = repo_path / "plymouth" / "umamusume"
+    plymouth_target = Path("/usr/share/plymouth/themes/umamusume")
+
+    if plymouth_src.exists():
+        run(
+            command=f"sudo mkdir -p {plymouth_target}",
+            logger=logger
+        )
+        run(
+            command=f"sudo cp -r {plymouth_src}/* {plymouth_target}/",
+            logger=logger,
+            shell=True
+        )
+        run(
+            command="sudo plymouth-set-default-theme -R umamusume",
+            logger=logger
+        )
+    else:
+        logger.warning(f"Diretório {plymouth_src} não encontrado.")
+
+
 def install_video_drivers(logger):
-    logger.info("Instalando os drivers de video")
+    logger.info("Instalando os drivers de vídeo")
 
     run(
         command="sudo pacman -S --needed --noconfirm mesa lib32-mesa libva-mesa-driver mesa-utils",
@@ -312,8 +367,6 @@ def install_video_drivers(logger):
     )
     try:
         output = subprocess.check_output("lspci | grep -E 'VGA|3D'", shell=True).decode().lower()
-        video_driver = ""
-        vulkan_driver = ""
 
         match output:
             case _ if "nvidia" in output:
@@ -334,26 +387,36 @@ def install_video_drivers(logger):
         logger=logger
     )
 
-def setup_gui(logger):
-    choice = input("[1] - startx\n[2] - sddm\nchoice: ")
+def setup_gui(logger, gui_choice=None, non_interactive=False, repo_root=None):
+    choice = None
+    if gui_choice:
+        choice = gui_choice.lower()
+    elif non_interactive:
+        logger.info("Modo não-interativo ativado. Escolhendo opção padrão de GUI: sddm")
+        choice = "sddm"
+    else:
+        user_in = input("[1] - startx\n[2] - sddm\nchoice: ").strip()
+        choice = "startx" if user_in == "1" else "sddm"
 
-    logger.info(f"Configurando a GUI, sua escolha: {"startx" if choice == "1" else "sddm"}")
+    gui_name = "startx" if choice in ["1", "startx"] else "sddm"
+    logger.info(f"Configurando a GUI, sua escolha: {gui_name}")
 
     install_video_drivers(logger)
 
-    if choice == "2": setup_sddm(
-        zip_path="dotfiles",
-        zip_name="sddm_theme.7z",
-        stow_path="dotfiles",
-        logger=logger
-    )
-    else: setup_startx(
-        packages=[{"name": "xorg", "target": [".xinitrc"]}],
-        stow_path="dotfiles",
-        logger=logger
-    )
+    if gui_name == "sddm":
+        setup_sddm(
+            zip_name="sddm_theme.7z",
+            repo_root=repo_root,
+            logger=logger
+        )
+    else:
+        setup_startx(
+            packages=[{"name": "xorg", "target": [".xinitrc"]}],
+            repo_root=repo_root,
+            logger=logger
+        )
 
-def setup_sddm(zip_path, zip_name, stow_path, logger):
+def setup_sddm(zip_name, repo_root, logger):
     run(
         command="sudo pacman -S --needed --noconfirm sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg",
         logger=logger
@@ -365,17 +428,17 @@ def setup_sddm(zip_path, zip_name, stow_path, logger):
     )
 
     unpack_sddm_theme(
-        zip_path=zip_path,
         zip_name=zip_name,
+        repo_root=repo_root,
         logger=logger
     )
 
     apply_sddm_stow(
-        stow_path=stow_path, 
+        repo_root=repo_root, 
         logger=logger
     )
 
-def setup_startx(packages, stow_path, logger):
+def setup_startx(packages, repo_root, logger):
     run(
         command="sudo pacman -S --needed --noconfirm xorg-xinit",
         logger=logger
@@ -383,7 +446,7 @@ def setup_startx(packages, stow_path, logger):
 
     apply_stow(
         packages=packages,
-        stow_path=stow_path,
+        repo_root=repo_root,
         logger=logger
     )
 
@@ -396,12 +459,46 @@ def setup_directories(logger):
     )
 
 def get_parse_args(logger):
-    parser = argparse.ArgumentParser(description="Script de pós instalação do Arch")
+    parser = argparse.ArgumentParser(description="Script de pós-instalação do Arch Linux")
     
     parser.add_argument(
         "-c", "--config", 
         default="packages.json", 
         help="Caminho pro JSON com as configurações (Padrão: packages.json)"
+    )
+
+    parser.add_argument(
+        "-g", "--gui",
+        choices=["sddm", "startx"],
+        default=None,
+        help="Escolha da interface gráfica (sddm ou startx)"
+    )
+
+    parser.add_argument(
+        "-y", "--yes", "--non-interactive",
+        dest="non_interactive",
+        action="store_true",
+        help="Executar instalação sem confirmações / modo não-interativo"
+    )
+
+    parser.add_argument(
+        "--reboot",
+        action="store_true",
+        default=False,
+        help="Reiniciar o sistema automaticamente ao final"
+    )
+
+    parser.add_argument(
+        "--no-reboot",
+        action="store_true",
+        default=False,
+        help="Não reiniciar o sistema ao final"
+    )
+
+    parser.add_argument(
+        "--repo-dir",
+        default=None,
+        help="Caminho raiz do repositório dotfiles (Padrão: detectado automaticamente)"
     )
     
     args = parser.parse_args()
@@ -409,17 +506,22 @@ def get_parse_args(logger):
     logger.info(f"Caminho do json: {args.config}")
     return args
 
-def load_json(parse_args, logger):
+def load_json(parse_args, repo_root, logger):
+    config_path = Path(parse_args.config)
+    if not config_path.is_absolute():
+        if not config_path.exists():
+            candidate = repo_root / "scripts" / "installation_script" / config_path
+            if candidate.exists():
+                config_path = candidate
+
     try:
-        with open(parse_args.config, 'r') as f:
+        with open(config_path, 'r') as f:
             config = json.load(f)
-        logger.info(f"{parse_args.config} carregado com sucesso")
+        logger.info(f"{config_path} carregado com sucesso")
         return config
     except FileNotFoundError:
-        logger.error(f"Arquivo '{parse_args.config}' não encontrado.")
+        logger.error(f"Arquivo '{config_path}' não encontrado.")
         sys.exit(1)
-        return
     except json.JSONDecodeError:
-        logger.error(f"O arquivo '{parse_args.config}' não é um JSON válido.")
+        logger.error(f"O arquivo '{config_path}' não é um JSON válido.")
         sys.exit(1)
-        return

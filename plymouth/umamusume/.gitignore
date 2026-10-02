@@ -1,1 +1,5 @@
+# Ignorar frames pesados do Plymouth (armazenados no Google Drive)
+*.png
+*.jpg
+*.jpeg
 frames/

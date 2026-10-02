@@ -48,4 +48,7 @@ Follow this execution flow:
      - 🔑 **Keybinding & Hook Index** (Hotkeys in `sxhkdrc`, systemd units, Xorg configs)
      - 🛡️ **Privilege & Deployment Boundaries** (User Stow modules vs. Root Sudo modules)
 
-5. Save the file to `.specify/memory/project-map.md` and display a summary of indexed modules to the user.
+5. **Completion Report & Commit Suggestion**:
+   - Save the file to `.specify/memory/project-map.md`.
+   - Display a summary of indexed modules.
+   - **Sugestão de Commit**: Fornecer sugestão de commit Conventional Commits (ex: `docs(map): update project architecture map (.specify/memory/project-map.md)`).
