@@ -2,9 +2,11 @@
 
 Repositório para armazenar meus dotfiles, configurações do sistema Linux e scripts de automação/instalação.
 
+Este repositório utiliza comandos e workflows assistidos por IA (`.agent/workflows`) para manutenção, especificação de módulos, auditoria e sincronização do sistema.
+
 ---
 
-## 🛠️ Fluxo do Agente Spec Kit (Dotfiles)
+## 🛠️ Fluxo de Trabalho do Agente Spec Kit (Dotfiles)
 
 O fluxo combina a especificação orientada a componentes com auditoria de pacotes, links simbólicos e sincronização com o sistema ativo.
 
@@ -44,7 +46,7 @@ O fluxo combina a especificação orientada a componentes com auditoria de pacot
 
 ---
 
-### 📋 Estágios do Fluxo
+### 📋 Estágios do Fluxo Principal
 
 | Comando | Função no Domínio de Dotfiles |
 | :--- | :--- |
@@ -59,12 +61,13 @@ O fluxo combina a especificação orientada a componentes com auditoria de pacot
 
 ---
 
-## 🔍 Novos Comandos Específicos para Dotfiles
+## 🔍 Comandos Específicos para Dotfiles & Manutenção
 
-Além do fluxo principal de especificação e desenvolvimento, o repositório conta com comandos utilitários dedicados à auditoria e sincronização do sistema Linux:
+Além do fluxo principal, o repositório conta com comandos utilitários dedicados à mapeamento, auditoria e sincronização do sistema Linux:
 
 | Comando | Descrição & Uso |
 | :--- | :--- |
+| **`/speckit-map`** | **Mapeamento Geral do Repositório**: Gera/atualiza o arquivo de memória [.specify/memory/project-map.md](file:///home/julio/dotfiles/.specify/memory/project-map.md) com o mapa completo de módulos, entrypoints, rotinas do instalador e pacotes, evitando que o agente precise ler todos os arquivos repetidamente. |
 | **`/speckit-audit-install`** | **Auditoria do Script de Instalação**: Analisa se o script de instalação (`scripts/installation_script/`) e a lista de pacotes (`packages.json`) estão 100% coerentes e sincronizados com as pastas de dotfiles existentes no repositório. |
 | **`/speckit-detect-drift`** | **Detecção de Mudanças Externas**: Compara o ambiente ativo do sistema (`~/.config`, `/etc`, etc.) com os arquivos versionados no repositório, identificando alterações locais não commitadas ou novos aplicativos elegíveis para importação. |
 | **`/speckit-ignore`** | **Gerenciamento do `.dotfilesignore`**: Visualiza, testa ou adiciona regras ao arquivo `.dotfilesignore` (ou `.agentignore`), definindo quais arquivos, caches, logs ou segredos o agente deve ignorar durante as varreduras. |
@@ -73,7 +76,7 @@ Além do fluxo principal de especificação e desenvolvimento, o repositório co
 
 ## 🛡️ Arquivo de Exclusões (`.dotfilesignore`)
 
-O arquivo [.dotfilesignore](file:///home/julio/dotfiles/.dotfilesignore) serve pro agente ignorar:
+O arquivo [.dotfilesignore](file:///home/julio/dotfiles/.dotfilesignore) garante que o agente ignore e proteja:
 - **Segredos e Credenciais**: Chaves SSH (`id_rsa`), certificados (`*.pem`, `*.key`), tokens de nuvem/API.
 - **Logs e Caches**: `install.log`, `__pycache__/`, `*.pyc`, diretórios `.cache/`.
 - **Dumps Binários**: Compactados grandes (`.7z`, `.iso`, `.tar.gz`) que não devem ir ao Git sem LFS.

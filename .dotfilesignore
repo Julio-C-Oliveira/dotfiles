@@ -48,3 +48,8 @@ Thumbs.db
 # Application Caches / Socket Files / Dynamic Runtime State
 *.sock
 *.pid
+
+# Excluded / Ignored Modules
+i3/
+gentoo/
+
