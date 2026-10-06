@@ -79,6 +79,9 @@ bindsym $mod+d exec rofi -show drun
 
 # Janela de atualizações (Pacman, Yay, Flatpak)
 bindsym $mod+a exec --no-startup-id $HOME/dotfiles/scripts/windows/system_updater.py
+
+# Janela de métricas do sistema (Disco, Teclado, Redes)
+bindsym $mod+i exec --no-startup-id $HOME/dotfiles/scripts/windows/system_metrics.py
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a

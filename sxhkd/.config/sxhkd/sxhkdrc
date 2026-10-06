@@ -18,6 +18,10 @@ super + d
 super + a
 	$HOME/dotfiles/scripts/windows/system_updater.py
 
+# Janela de métricas do sistema (Disco, Teclado, Redes)
+super + i
+	$HOME/dotfiles/scripts/windows/system_metrics.py
+
 # make sxhkd reload its configuration files: !! Tenho que olhar isso depois !!!
 super + Escape
 	pkill -USR1 -x sxhkd

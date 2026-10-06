@@ -17,3 +17,5 @@ for mon in $(bspc query -M --names); do
         MONITOR=$mon polybar top_secondary &
     fi
 done
+
+disown -a
