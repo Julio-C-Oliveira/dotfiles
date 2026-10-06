@@ -22,6 +22,14 @@ super + a
 super + i
 	$HOME/dotfiles/scripts/windows/system_metrics.py
 
+# Iniciar / Pausar / Retomar Pomodoro
+super + p
+	$HOME/dotfiles/scripts/pomodoro.py toggle
+
+# Menu do Pomodoro no Rofi
+super + shift + p
+	$HOME/dotfiles/scripts/windows/pomodoro_menu.py
+
 # make sxhkd reload its configuration files: !! Tenho que olhar isso depois !!!
 super + Escape
 	pkill -USR1 -x sxhkd
