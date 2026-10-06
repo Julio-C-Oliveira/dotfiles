@@ -33,7 +33,7 @@
             "curl", "wget",
             "zip", "unzip", "p7zip",
             "pciutils",
-            "ripgrep", "fd"
+            "ripgrep", "fd", "pacman-contrib"
         ],
         "apps" : [
             "firefox",

@@ -14,6 +14,10 @@ super + Return
 super + d
 	rofi -show drun
 
+# Janela de atualizações (Pacman, Yay, Flatpak)
+super + a
+	$HOME/dotfiles/scripts/windows/system_updater.py
+
 # make sxhkd reload its configuration files: !! Tenho que olhar isso depois !!!
 super + Escape
 	pkill -USR1 -x sxhkd
