@@ -12,6 +12,12 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, str(Path(__file__).parent))
+try:
+  import task_manager
+except Exception:
+  task_manager = None
+
 STATE_FILE = Path("/tmp/pomodoro_state.json")
 
 SOUND_START = "/usr/share/sounds/freedesktop/stereo/bell.oga"
@@ -49,6 +55,8 @@ def load_state() -> dict:
       "remaining_sec": 90 * 60,
       "cycle_count": 0,
       "completed_at": 0.0,
+      "task_id": None,
+      "task_name": "",
   }
   if STATE_FILE.exists():
     try:
@@ -70,7 +78,7 @@ def save_state(state: dict):
     pass
 
 
-def start_cycle(minutes: float, mode: str = "work", manual: bool = True):
+def start_cycle(minutes: float, mode: str = "work", manual: bool = True, task_id: int | None = None, task_name: str = ""):
   state = load_state()
   duration_sec = int(minutes * 60)
   now = time.time()
@@ -81,13 +89,18 @@ def start_cycle(minutes: float, mode: str = "work", manual: bool = True):
   state["remaining_sec"] = duration_sec
   state["end_time"] = now + duration_sec
   state["completed_at"] = 0.0
+  state["task_id"] = task_id
+  state["task_name"] = task_name
 
   save_state(state)
   play_sound(SOUND_START)
 
   if manual:
     if mode == "work":
-      notify("🍅 Foco Iniciado", f"Ciclo de foco de {int(minutes)} minutos iniciado. Bom trabalho!", "normal")
+      if task_name:
+        notify("🍅 Foco Iniciado", f"Ciclo de {int(minutes)} min: {task_name}", "normal")
+      else:
+        notify("🍅 Foco Iniciado", f"Ciclo de foco de {int(minutes)} minutos iniciado. Bom trabalho!", "normal")
     elif mode in ("short_break", "long_break"):
       notify("☕ Pausa Iniciada", f"Pausa de {int(minutes)} minutos. Relaxe um pouco!", "normal")
 
@@ -132,6 +145,8 @@ def stop():
   state["state"] = "stopped"
   state["end_time"] = 0.0
   state["remaining_sec"] = state.get("duration_sec", 90 * 60)
+  state["task_id"] = None
+  state["task_name"] = ""
   save_state(state)
   notify("⏹️ Pomodoro Resetado", "Cronômetro interrompido e resetado.", "low")
 
@@ -173,11 +188,23 @@ def get_status() -> str:
 
       if mode == "work":
         cycles = state["cycle_count"]
-        notify(
-            "🎉 Ciclo de Foco Finalizado!",
-            f"Parabéns! Ciclo #{cycles} (90 min) concluído.\nSugestão: Faça uma pausa de 30 minutos.",
-            "critical",
-        )
+        t_id = state.get("task_id")
+        t_name = state.get("task_name")
+        if t_id is not None and task_manager:
+          task_manager.increment_task_pomodoros(t_id)
+
+        if t_name:
+          notify(
+              "🎉 Ciclo de Foco Finalizado!",
+              f"Tarefa: {t_name}\nCiclo #{cycles} (90 min) concluído. Sugestão: Faça uma pausa de 30 minutos.",
+              "critical",
+          )
+        else:
+          notify(
+              "🎉 Ciclo de Foco Finalizado!",
+              f"Parabéns! Ciclo #{cycles} (90 min) concluído.\nSugestão: Faça uma pausa de 30 minutos.",
+              "critical",
+          )
       else:
         notify(
             "☕ Pausa Concluída!",
@@ -238,7 +265,9 @@ def main():
   elif cmd == "start":
     minutes = float(sys.argv[2]) if len(sys.argv) > 2 else 90.0
     mode = sys.argv[3] if len(sys.argv) > 3 else "work"
-    start_cycle(minutes, mode)
+    task_id = int(sys.argv[4]) if len(sys.argv) > 4 and sys.argv[4].isdigit() else None
+    task_name = sys.argv[5] if len(sys.argv) > 5 else ""
+    start_cycle(minutes, mode, manual=True, task_id=task_id, task_name=task_name)
   else:
     print(f"Comando desconhecido: {cmd}", file=sys.stderr)
     sys.exit(1)
