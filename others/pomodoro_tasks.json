@@ -2,8 +2,65 @@
   {
     "id": 1,
     "text": "Montar a aula de árvores (estrutura, árvores binárias e AVL)",
+    "description": "Preparar slides, árvores binárias de busca e implementação de rotações AVL.",
+    "status": "pending",
+    "pomodoros": 1,
+    "created_at": "2026-10-07 08:24"
+  },
+  {
+    "id": 2,
+    "text": "Estudar o curso de Pentest da Udemy",
+    "description": "Módulo sobre reconhecimento de rede e exploração de vulnerabilidades web.",
+    "status": "done",
+    "pomodoros": 0,
+    "created_at": "2026-10-07 12:28"
+  },
+  {
+    "id": 3,
+    "text": "Fazer o artigo de inf e sociedade",
+    "description": "Revisar introdução, fundamentação teórica e conclusões do artigo.",
+    "status": "done",
+    "pomodoros": 1,
+    "created_at": "2026-10-08 08:21"
+  },
+  {
+    "id": 4,
+    "text": "Montar a apresentação sobre ataque de inferencia",
+    "description": "Focar em cenários práticos, vazamento de dados em ML e mitigações.",
+    "status": "done",
+    "pomodoros": 0,
+    "created_at": "2026-10-14 08:14"
+  },
+  {
+    "id": 5,
+    "text": "Montar a aula de LAB 01 - 27/10.",
+    "description": "Scan de Redes e Vulnerabilidades: Passiva (wireshark) e ativa (nmap).",
+    "status": "pending",
+    "pomodoros": 1,
+    "created_at": "2026-10-22 17:16"
+  },
+  {
+    "id": 6,
+    "text": "Montar a aula LAB 02 - 27/10.",
+    "description": "Exploração de vulnerabilidades no Metasploit.",
     "status": "pending",
     "pomodoros": 0,
-    "created_at": "2026-10-07 08:24"
+    "created_at": "2026-10-22 17:17"
+  },
+  {
+    "id": 7,
+    "text": "Montar a aula LAB 03 - 28/10.",
+    "description": "Quebra de senhas com Pass the Hash e outros.",
+    "status": "pending",
+    "pomodoros": 0,
+    "created_at": "2026-10-22 17:18"
+  },
+  {
+    "id": 8,
+    "text": "Montar a aula LAB 04 - 03/11.",
+    "description": "Segurança de Aplicações Web e as 10 principais vulnerabilidades da OWASP.",
+    "status": "pending",
+    "pomodoros": 0,
+    "created_at": "2026-10-22 17:19"
   }
 ]
