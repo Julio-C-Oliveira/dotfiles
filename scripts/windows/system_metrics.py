@@ -70,6 +70,9 @@ def get_ip_address(iface: str) -> str:
         text=True,
         timeout=1,
     )
+    for part in res.stdout.split()[2:]:
+      if "." in part:
+        return part.split("/")[0]
     parts = res.stdout.split()
     if len(parts) >= 3:
       return parts[2].split("/")[0]
@@ -81,30 +84,80 @@ def get_ip_address(iface: str) -> str:
 def get_wifi_details() -> dict:
   ssid = ""
   signal = ""
-  iface = "wlp0s20f3"
+  iface = ""
 
   # Tenta localizar interface wireless
-  for p in Path("/sys/class/net").glob("wl*"):
-    iface = p.name
-    break
-
   try:
-    res = subprocess.run(
-        ["nmcli", "-t", "-f", "ACTIVE,SSID,SIGNAL", "dev", "wifi"],
-        capture_output=True,
-        text=True,
-        env={**os.environ, "LC_ALL": "C"},
-        timeout=2,
-    )
-    for line in res.stdout.splitlines():
-      if line.startswith("yes:"):
-        parts = line.split(":")
-        if len(parts) >= 3:
-          ssid = parts[1]
-          signal = parts[2]
+    for p in Path("/sys/class/net").iterdir():
+      if (p / "wireless").exists() or (p / "phy80211").exists():
+        iface = p.name
         break
   except Exception:
     pass
+
+  if not iface:
+    for p in Path("/sys/class/net").glob("wl*"):
+      iface = p.name
+      break
+
+  if not iface:
+    iface = "wlan0"
+
+  # 1. Consulta nmcli usando cache existente (--rescan no para evitar atraso de varredura ativa)
+  try:
+    res = subprocess.run(
+        ["nmcli", "-t", "-f", "ACTIVE,SSID,SIGNAL", "dev", "wifi", "list", "--rescan", "no"],
+        capture_output=True,
+        text=True,
+        env={**os.environ, "LC_ALL": "C"},
+        timeout=1.5,
+    )
+    for line in res.stdout.splitlines():
+      if line.startswith("yes:"):
+        content = line[4:]
+        if ":" in content:
+          ssid, signal = content.rsplit(":", 1)
+          ssid = ssid.replace(r"\:", ":")
+        else:
+          ssid = content
+        break
+  except Exception:
+    pass
+
+  # 2. Fallback: Se não encontrou SSID pelo cache da lista Wi-Fi, consulta estado da conexão do dispositivo
+  if not ssid:
+    try:
+      res = subprocess.run(
+          ["nmcli", "-t", "-f", "DEVICE,TYPE,STATE,CONNECTION", "dev"],
+          capture_output=True,
+          text=True,
+          env={**os.environ, "LC_ALL": "C"},
+          timeout=1.5,
+      )
+      for line in res.stdout.splitlines():
+        parts = line.split(":")
+        if len(parts) >= 4 and parts[1] == "wifi" and "connected" in parts[2]:
+          iface = parts[0]
+          ssid = parts[3].replace(r"\:", ":")
+          break
+    except Exception:
+      pass
+
+  # 3. Fallback para intensidade do sinal via /proc/net/wireless se estiver conectado
+  if ssid and not signal:
+    try:
+      proc_wireless = Path("/proc/net/wireless")
+      if proc_wireless.exists():
+        for line in proc_wireless.read_text().splitlines():
+          if iface in line:
+            parts = line.split()
+            if len(parts) >= 3:
+              quality_str = parts[2].rstrip(".")
+              pct = int(min(max((float(quality_str) / 70.0) * 100, 0), 100))
+              signal = str(pct)
+            break
+    except Exception:
+      pass
 
   ip_addr = get_ip_address(iface)
   connected = bool(ssid)
