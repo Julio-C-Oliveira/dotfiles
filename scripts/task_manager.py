@@ -33,12 +33,21 @@ def save_tasks(tasks: list[dict]) -> None:
     pass
 
 
-def add_task(text: str) -> dict:
+def get_task(task_id: int) -> dict | None:
+  tasks = load_tasks()
+  for t in tasks:
+    if t.get("id") == task_id:
+      return t
+  return None
+
+
+def add_task(text: str, description: str = "") -> dict:
   tasks = load_tasks()
   next_id = max([t.get("id", 0) for t in tasks], default=0) + 1
   new_task = {
       "id": next_id,
       "text": text.strip(),
+      "description": description.strip(),
       "status": "pending",  # "pending" ou "done"
       "pomodoros": 0,
       "created_at": time.strftime("%Y-%m-%d %H:%M"),
@@ -58,14 +67,25 @@ def toggle_task(task_id: int) -> bool:
   return False
 
 
-def edit_task(task_id: int, new_text: str) -> bool:
+def edit_task(
+    task_id: int,
+    new_text: str | None = None,
+    new_description: str | None = None,
+) -> bool:
   tasks = load_tasks()
   for t in tasks:
     if t.get("id") == task_id:
-      t["text"] = new_text.strip()
+      if new_text is not None:
+        t["text"] = new_text.strip()
+      if new_description is not None:
+        t["description"] = new_description.strip()
       save_tasks(tasks)
       return True
   return False
+
+
+def edit_task_description(task_id: int, new_description: str) -> bool:
+  return edit_task(task_id, new_description=new_description)
 
 
 def delete_task(task_id: int) -> bool:

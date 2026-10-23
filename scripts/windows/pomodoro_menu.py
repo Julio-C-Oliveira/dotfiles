@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
 pomodoro_menu.py - Menu Rofi para Controle do Pomodoro & TO-DO List
-Integração de ciclo de foco/pausa com gerenciamento de tarefas.
+Integração de ciclo de foco/pausa com gerenciamento de tarefas e descrições.
 """
 
 import html
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
+import textwrap
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 try:
@@ -22,6 +24,71 @@ STATE_FILE = Path("/tmp/pomodoro_state.json")
 
 def escape_pango(text: str) -> str:
   return html.escape(str(text))
+
+
+def notify_user(title: str, msg: str, urgency: str = "normal") -> None:
+  if shutil.which("notify-send"):
+    try:
+      subprocess.Popen([
+          "notify-send",
+          "-a", "Pomodoro",
+          "-u", urgency,
+          "-i", "alarm-clock",
+          title,
+          msg,
+      ])
+    except Exception:
+      pass
+
+
+def copy_to_clipboard(text: str) -> bool:
+  for clip_cmd in [
+      ["xclip", "-selection", "clipboard"],
+      ["xsel", "--clipboard", "--input"],
+      ["wl-copy"],
+  ]:
+    if shutil.which(clip_cmd[0]):
+      try:
+        subprocess.run(
+            clip_cmd,
+            input=text.encode("utf-8"),
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        return True
+      except Exception:
+        continue
+  return False
+
+
+def format_description_rows(desc: str, max_width: int = 65) -> list[str]:
+  if not desc or not desc.strip():
+    return [
+        "<b><span foreground='#6272a4'>[DESCRIÇÃO]</span></b>  <span foreground='#6272a4'><i>(Sem descrição cadastrada)</i></span>"
+    ]
+
+  raw_paragraphs = desc.strip().splitlines()
+  wrapped_lines: list[str] = []
+  for p in raw_paragraphs:
+    p_clean = p.strip()
+    if not p_clean:
+      continue
+    chunks = textwrap.wrap(p_clean, width=max_width)
+    wrapped_lines.extend(chunks if chunks else [p_clean])
+
+  if not wrapped_lines:
+    return [
+        "<b><span foreground='#6272a4'>[DESCRIÇÃO]</span></b>  <span foreground='#6272a4'><i>(Sem descrição cadastrada)</i></span>"
+    ]
+
+  rows: list[str] = []
+  prefix_first = "<b><span foreground='#8be9fd'>[DESCRIÇÃO]</span></b>  "
+  prefix_indent = "               "
+  for i, line in enumerate(wrapped_lines):
+    prefix = prefix_first if i == 0 else prefix_indent
+    rows.append(f"{prefix}<span foreground='#f8f8f2'>{escape_pango(line)}</span>")
+  return rows
 
 
 def load_state() -> dict:
@@ -44,22 +111,35 @@ def run_pomodoro(args: list[str]):
   subprocess.run([str(POMODORO_SCRIPT)] + args)
 
 
-def ask_text_input(prompt: str, placeholder: str = "") -> str | None:
+def ask_text_input(
+    prompt: str,
+    placeholder: str = "",
+    initial_text: str = "",
+    allow_empty: bool = False,
+) -> str | None:
+  clean_placeholder = placeholder.replace('"', '\\"').replace("\n", " ")
   rofi_cmd = [
       "rofi",
       "-dmenu",
       "-p",
       prompt,
+  ]
+  if initial_text:
+    rofi_cmd.extend(["-filter", initial_text])
+
+  rofi_cmd.extend([
       "-theme-str",
       f"""
-        window {{ width: 45%; }}
+        window {{ width: 50%; }}
         listview {{ lines: 0; }}
-        entry {{ placeholder: "{placeholder}"; }}
+        entry {{ placeholder: "{clean_placeholder}"; }}
       """,
-  ]
+  ])
   res = subprocess.run(rofi_cmd, capture_output=True, text=True)
-  if res.returncode == 0 and res.stdout.strip():
-    return res.stdout.strip()
+  if res.returncode == 0:
+    val = res.stdout.strip()
+    if val or allow_empty:
+      return val
   return None
 
 
@@ -76,79 +156,140 @@ def ask_custom_time() -> float | None:
 
 
 def task_action_menu(task: dict) -> str:
-  """Exibe submenu de ações para uma tarefa específica."""
+  """Exibe submenu de ações e descrição para uma tarefa específica."""
   t_id = task["id"]
-  t_text = escape_pango(task["text"])
-  t_status = task.get("status", "pending")
-  pomos = task.get("pomodoros", 0)
 
-  options = []
-  actions = []
+  while True:
+    current_task = None
+    if task_manager:
+      current_task = task_manager.get_task(t_id)
+    if not current_task:
+      current_task = task
 
-  options.append(
-      f"<b><span foreground='#bd93f9'>[TAREFA]</span></b>  <span foreground='#f8f8f2'>{t_text}</span> <span foreground='#6272a4'>({pomos} ciclos)</span>"
-  )
-  actions.append(None)
+    t_text = escape_pango(current_task["text"])
+    t_status = current_task.get("status", "pending")
+    pomos = current_task.get("pomodoros", 0)
+    desc = current_task.get("description", "").strip()
 
-  options.append("<span foreground='#6272a4'>─────────────────────────────────────────────────────────</span>")
-  actions.append(None)
+    options = []
+    actions = []
 
-  if t_status == "pending":
-    options.append("  <span foreground='#50fa7b'>🚀</span> <b>Iniciar Foco (90 min) nesta tarefa</b>")
-    actions.append("start_focus")
+    # Cabeçalho da Tarefa
+    options.append(
+        f"<b><span foreground='#bd93f9'>[TAREFA]</span></b>     <span foreground='#f8f8f2'>{t_text}</span> <span foreground='#6272a4'>({pomos} ciclos)</span>"
+    )
+    actions.append("edit_title")
 
-    options.append("  <span foreground='#8be9fd'>✔️</span> <b>Marcar como Concluída</b>")
-    actions.append("toggle_status")
+    # Linhas da Descrição
+    desc_rows = format_description_rows(desc, max_width=65)
+    for row in desc_rows:
+      options.append(row)
+      actions.append("edit_desc")
+
+    options.append("<span foreground='#6272a4'>─────────────────────────────────────────────────────────</span>")
+    actions.append(None)
+
+    first_action_idx = len(options)
+
+    if t_status == "pending":
+      options.append("  <span foreground='#50fa7b'>🚀</span> <b>Iniciar Foco (90 min) nesta tarefa</b>")
+      actions.append("start_focus")
+
+      options.append("  <span foreground='#8be9fd'>✔️</span> <b>Marcar como Concluída</b>")
+      actions.append("toggle_status")
+    else:
+      options.append("  <span foreground='#f1fa8c'>↩️</span> <b>Reabrir Tarefa (Marcar como Pendente)</b>")
+      actions.append("toggle_status")
 
     options.append("  <span foreground='#f1fa8c'>✏️</span> <b>Editar Título</b>")
-    actions.append("edit")
-  else:
-    options.append("  <span foreground='#f1fa8c'>↩️</span> <b>Reabrir Tarefa (Marcar como Pendente)</b>")
-    actions.append("toggle_status")
+    actions.append("edit_title")
 
-  options.append("  <span foreground='#ff5555'>🗑️</span> <b>Excluir Tarefa</b>")
-  actions.append("delete")
+    desc_label = "Editar Descrição" if desc else "Adicionar Descrição"
+    desc_icon = "✏️" if desc else "➕"
+    options.append(f"  <span foreground='#bd93f9'>{desc_icon}</span> <b>{desc_label}</b>")
+    actions.append("edit_desc")
 
-  options.append("  <span foreground='#6272a4'>🔙</span> <b>Voltar</b>")
-  actions.append("back")
+    if desc:
+      options.append("  <span foreground='#8be9fd'>📋</span> <b>Copiar Descrição</b>")
+      actions.append("copy_desc")
 
-  menu_input = "\n".join(options)
+    options.append("  <span foreground='#ff5555'>🗑️</span> <b>Excluir Tarefa</b>")
+    actions.append("delete")
 
-  rofi_cmd = [
-      "rofi",
-      "-dmenu",
-      "-i",
-      "-markup-rows",
-      "-format",
-      "i",
-      "-p",
-      "Opções da Tarefa",
-      "-theme-str",
-      """
-        window { width: 50%; }
-        listview { lines: 7; spacing: 3px; }
-        element { padding: 6px 12px; border-radius: 4px; }
-      """,
-  ]
+    options.append("  <span foreground='#6272a4'>🔙</span> <b>Voltar</b>")
+    actions.append("back")
 
-  res = subprocess.run(rofi_cmd, input=menu_input, text=True, capture_output=True)
-  if res.returncode == 0 and res.stdout.strip().isdigit():
+    menu_input = "\n".join(options)
+
+    rofi_cmd = [
+        "rofi",
+        "-dmenu",
+        "-i",
+        "-markup-rows",
+        "-format",
+        "i",
+        "-p",
+        "Detalhes da Tarefa",
+        "-selected-row",
+        str(first_action_idx),
+        "-theme-str",
+        f"""
+          window {{ width: 60%; }}
+          listview {{ lines: {min(14, len(options))}; spacing: 3px; }}
+          element {{ padding: 6px 12px; border-radius: 4px; }}
+        """,
+    ]
+
+    res = subprocess.run(rofi_cmd, input=menu_input, text=True, capture_output=True)
+    if res.returncode != 0 or not res.stdout.strip().isdigit():
+      # Usuário pressionou Esc
+      return "stay"
+
     idx = int(res.stdout.strip())
+    if idx >= len(actions):
+      return "stay"
+
     action = actions[idx]
+
     if action == "start_focus":
-      run_pomodoro(["start", "90", "work", str(t_id), task["text"]])
+      run_pomodoro(["start", "90", "work", str(t_id), current_task["text"]])
       return "exit"
     elif action == "toggle_status":
       if task_manager:
         task_manager.toggle_task(t_id)
-    elif action == "edit":
-      new_title = ask_text_input("Novo título:", task["text"])
+      return "stay"
+    elif action == "edit_title":
+      new_title = ask_text_input(
+          "Novo título:",
+          placeholder="Digite o novo título...",
+          initial_text=current_task["text"],
+      )
       if new_title and task_manager:
-        task_manager.edit_task(t_id, new_title)
+        task_manager.edit_task(t_id, new_text=new_title)
+        task["text"] = new_title
+      continue
+    elif action == "edit_desc":
+      new_desc = ask_text_input(
+          "Nova descrição:",
+          placeholder="Digite a descrição (ou deixe vazio para remover)...",
+          initial_text=current_task.get("description", ""),
+          allow_empty=True,
+      )
+      if new_desc is not None and task_manager:
+        task_manager.edit_task_description(t_id, new_desc)
+        task["description"] = new_desc
+      continue
+    elif action == "copy_desc":
+      if desc:
+        copy_to_clipboard(desc)
+        notify_user("📋 Pomodoro", "Descrição copiada para a área de transferência!", "low")
+      continue
     elif action == "delete":
       if task_manager:
         task_manager.delete_task(t_id)
-  return "stay"
+      return "stay"
+    elif action == "back" or action is None:
+      return "stay"
 
 
 def main():
@@ -234,8 +375,10 @@ def main():
       pomo_str = f"{pomos} ciclos" if pomos != 1 else "1 ciclo"
       is_active = (curr_task_id == t["id"] and st in ("running", "paused"))
       active_badge = " <span foreground='#50fa7b'>[🎯 Ativa]</span>" if is_active else ""
+      has_desc = bool(t.get("description", "").strip())
+      desc_icon = " <span foreground='#8be9fd'>󰈙</span>" if has_desc else ""
       line = (
-          f"  <span foreground='#f8f8f2'>󰄱</span>  <b>{t_text}</b>{active_badge}"
+          f"  <span foreground='#f8f8f2'>󰄱</span>  <b>{t_text}</b>{active_badge}{desc_icon}"
           f"  <span foreground='#bd93f9'>[{pomo_str}]</span>"
       )
       menu_items.append(line)
@@ -256,8 +399,10 @@ def main():
         t_text = escape_pango(t["text"])
         pomos = t.get("pomodoros", 0)
         pomo_str = f"{pomos} ciclos" if pomos != 1 else "1 ciclo"
+        has_desc = bool(t.get("description", "").strip())
+        desc_icon = " <span foreground='#6272a4'>󰈙</span>" if has_desc else ""
         line = (
-            f"  <span foreground='#6272a4'>󰄵  <s>{t_text}</s>"
+            f"  <span foreground='#6272a4'>󰄵  <s>{t_text}</s>{desc_icon}"
             f"  [{pomo_str}]</span>"
         )
         menu_items.append(line)
@@ -319,9 +464,18 @@ def main():
         run_pomodoro(["start", str(mins), "work"])
         break
     elif action_type == "add_task":
-      new_title = ask_text_input("📝 Nova Tarefa:", "Digite a descrição da tarefa...")
+      new_title = ask_text_input(
+          "📝 Nova Tarefa:",
+          placeholder="Digite o título da tarefa...",
+      )
       if new_title and task_manager:
-        task_manager.add_task(new_title)
+        new_desc = ask_text_input(
+            "📄 Descrição (opcional):",
+            placeholder="Digite a descrição (Enter para pular, Esc para cancelar)...",
+            allow_empty=True,
+        )
+        if new_desc is not None:
+          task_manager.add_task(new_title, new_desc)
     elif action_type == "task_click":
       result = task_action_menu(action_val)
       if result == "exit":
