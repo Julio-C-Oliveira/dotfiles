@@ -177,42 +177,53 @@ def get_status() -> str:
     rem = int(end_t - now)
 
     if rem <= 0:
-      # Concluiu o ciclo
-      state["state"] = "completed"
-      state["completed_at"] = now
       if mode == "work":
-        state["cycle_count"] = state.get("cycle_count", 0) + 1
-      save_state(state)
-
-      play_sound(SOUND_END)
-
-      if mode == "work":
-        cycles = state["cycle_count"]
+        cycles = state.get("cycle_count", 0) + 1
+        state["cycle_count"] = cycles
         t_id = state.get("task_id")
         t_name = state.get("task_name")
         if t_id is not None and task_manager:
           task_manager.increment_task_pomodoros(t_id)
 
+        play_sound(SOUND_END)
+
         if t_name:
           notify(
-              "🎉 Ciclo de Foco Finalizado!",
-              f"Tarefa: {t_name}\nCiclo #{cycles} (90 min) concluído. Sugestão: Faça uma pausa de 30 minutos.",
+              "🎉 Foco Finalizado!",
+              f"Tarefa: {t_name}\nCiclo #{cycles} (90 min) concluído.\nIniciando pausa de 30 minutos automaticamente.",
               "critical",
           )
         else:
           notify(
-              "🎉 Ciclo de Foco Finalizado!",
-              f"Parabéns! Ciclo #{cycles} (90 min) concluído.\nSugestão: Faça uma pausa de 30 minutos.",
+              "🎉 Foco Finalizado!",
+              f"Ciclo #{cycles} (90 min) concluído.\nIniciando pausa de 30 minutos automaticamente.",
               "critical",
           )
+
+        # Transição automática para pausa de 30 minutos
+        state["state"] = "running"
+        state["mode"] = "short_break"
+        state["duration_sec"] = 30 * 60
+        state["remaining_sec"] = 30 * 60
+        state["end_time"] = now + 30 * 60
+        state["completed_at"] = 0.0
+        save_state(state)
+
+        return "%{F#50fa7b}󰅶%{F-} %{F#f8f8f2}30:00%{F-}"
+
       else:
+        # Fim da pausa: aguarda o usuário para iniciar o próximo foco
+        state["state"] = "completed"
+        state["completed_at"] = now
+        save_state(state)
+
+        play_sound(SOUND_ALARM)
         notify(
             "☕ Pausa Concluída!",
-            "Sua pausa terminou. Pronto para voltar ao foco?",
+            "Sua pausa de 30 minutos terminou. Pronto para voltar ao foco?",
             "critical",
         )
-
-      return "%{F#50fa7b}🎉 Concluído%{F-}"
+        return "%{F#50fa7b}󰄉 00:00%{F-}"
 
     mins = rem // 60
     secs = rem % 60
